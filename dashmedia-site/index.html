@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dash Media | Exclusive Mortgage Leads</title>
+<meta name="description" content="Dash Media delivers exclusive, OTP-verified mortgage leads straight to your CRM. No pay-per-lead upsells, no long-term contracts. Just a done-for-you lead system built for mortgage professionals.">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;800&display=block" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM — the reference-pixel unit (hero)
+   ============================================================ */
+:root{
+  --u: min(calc(100vw / 1280), calc(100dvh / 760));
+
+  --ink:        #ffffff;
+  --ink-muted:  #ededed;
+  --panel:      #181818;
+  --white-btn:  #fdfdfd;
+  --btn-ink:    #050505;
+  --glass-fill: rgba(0,0,0,.78);
+  --glass-line: rgba(255,255,255,.09);
+  --accent:     #1d4ed8;
+
+  --dx: 8.5;
+  --dy: 13.1;
+
+  --e-reveal: cubic-bezier(.16, 1, .3, 1);
+  --e-soft:   cubic-bezier(.25, .8, .3, 1);
+}
+@supports not (height: 100dvh){
+  :root{ --u: min(calc(100vw / 1280), calc(100vh / 760)); }
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#000}
+html{overflow-x:hidden}
+body{overflow-x:hidden;overflow-y:auto}
+
+body{
+  font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:geometricPrecision;
+  color:var(--ink);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;width:100vw;height:100dvh;overflow:hidden;background:#000}
+@supports not (height: 100dvh){ .hero{height:100vh} }
+
+.bg{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  width:max(100vw, calc(100dvh * 1.6));
+  height:max(62.5vw, 100dvh);
+  background-color:#000;
+}
+@supports not (height: 100dvh){
+  .bg{width:max(100vw, calc(100vh * 1.6));height:max(62.5vw, 100vh)}
+}
+.bg-video{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:51% 8%;
+  display:block;
+  background-color:#000;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .9s linear;
+  filter:hue-rotate(-32deg) saturate(1.05);
+}
+.bg-video.is-active{opacity:1}
+
+.nav{position:absolute;top:0;left:0;right:0;height:calc(67 * var(--u));
+     display:flex;align-items:center;
+     padding-left:calc(24.5 * var(--u));padding-right:calc(50.7 * var(--u));z-index:3}
+
+.logo{
+  display:flex;align-items:center;gap:calc(10 * var(--u));
+  transform:translateY(calc(-2.4 * var(--u)));line-height:1;color:var(--ink);
+  text-decoration:none;white-space:nowrap;
+}
+.logo-mark{width:calc(34 * var(--u));height:calc(34 * var(--u));border-radius:50%;
+  display:block;flex:0 0 auto;background:#0A2342}
+.logo-text{font-weight:800;font-size:calc(23 * var(--u));letter-spacing:calc(0.45 * var(--u));color:var(--ink)}
+
+.nav-links{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%) translateX(calc(-23 * var(--u)));
+  display:flex;align-items:center;gap:calc(24.3 * var(--u));white-space:nowrap;
+}
+.nav-links a{
+  color:var(--ink-muted);text-decoration:none;font-size:calc(11.5 * var(--u));
+  font-weight:500;letter-spacing:calc(-0.15 * var(--u));line-height:1;
+  transition:color .18s ease;
+}
+.nav-links a:hover{color:#fff}
+
+.nav-actions{margin-left:auto;display:flex;align-items:center;gap:calc(6.8 * var(--u))}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:inherit;text-decoration:none;white-space:nowrap;border:0;cursor:pointer;
+}
+
+.btn-nav-start{
+  height:calc(28 * var(--u));padding-left:calc(13.5 * var(--u));
+  padding-right:calc(14.5 * var(--u));border-radius:calc(14 * var(--u));
+  background:var(--white-btn);color:var(--btn-ink);font-size:calc(11.1 * var(--u));
+  font-weight:500;letter-spacing:0;gap:calc(7 * var(--u));
+  transition:background .18s ease;
+}
+.btn-nav-start:hover{background:#fff}
+.btn-nav-start .arw{width:calc(11.5 * var(--u));height:calc(9.6 * var(--u))}
+
+.burger{
+  display:none;margin-left:auto;width:calc(40 * var(--u));
+  height:calc(28 * var(--u));align-items:center;justify-content:center;
+  background:var(--panel);border-radius:calc(14 * var(--u));border:0;cursor:pointer;padding:0;
+}
+.burger span{display:block;width:16px;height:1.5px;background:#ededed;border-radius:2px;position:relative}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:16px;height:1.5px;background:#ededed;border-radius:2px}
+.burger span::before{top:-5px}
+.burger span::after{top:5px}
+
+.arw{flex:0 0 auto;display:block}
+
+.hero-inner{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%) translate(calc(var(--dx) * var(--u)), calc(var(--dy) * var(--u)));
+  width:max-content;max-width:calc(100vw - 48px);text-align:center;z-index:2;
+}
+.hero-logo-wrap{position:relative;width:calc(150 * var(--u));height:calc(150 * var(--u));margin:0 auto calc(32 * var(--u))}
+.hero-logo{width:100%;height:100%;border-radius:50%;display:block;position:relative;z-index:2;
+  background:#0A2342;box-shadow:0 0 0 1px rgba(255,255,255,.14), 0 20px 48px rgba(0,0,0,.65)}
+.hero-logo-glow{position:absolute;inset:calc(-24 * var(--u));border-radius:50%;z-index:1;pointer-events:none;
+  background:radial-gradient(circle, rgba(37,99,235,.34) 0%, rgba(59,130,246,.15) 46%, rgba(37,99,235,0) 72%);
+  filter:blur(calc(7 * var(--u)));animation:glowPulse 3.6s ease-in-out infinite}
+.hero-logo-ring{position:absolute;inset:calc(-10 * var(--u));border-radius:50%;z-index:3;pointer-events:none;
+  background:conic-gradient(from 0deg, transparent 0deg, rgba(59,130,246,0) 18deg, rgba(59,130,246,.95) 72deg,
+    rgba(165,205,255,.95) 98deg, rgba(59,130,246,0) 138deg, transparent 360deg);
+  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  mask:radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  animation:spin 2.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes glowPulse{0%,100%{opacity:.5;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+
+.ln{display:block}
+.ln-i{display:block}
+h1{margin:0;font-weight:500;font-size:calc(54 * var(--u));
+   line-height:calc(58 * var(--u));letter-spacing:calc(-0.7 * var(--u));color:var(--ink)}
+.ln-i.em{font-weight:600}
+
+.sub{
+  margin:calc(16.1 * var(--u)) 0 0;font-weight:300;font-size:calc(17.4 * var(--u));
+  line-height:calc(27 * var(--u));letter-spacing:calc(-0.30 * var(--u));color:#f6f6f6;
+}
+
+.ctas{margin-top:calc(21.8 * var(--u));display:flex;align-items:center;
+      justify-content:center;transform:translateX(calc(-0.75 * var(--u)));
+      gap:calc(7 * var(--u))}
+
+.btn-lg{height:calc(39 * var(--u));border-radius:calc(19.5 * var(--u));
+        font-size:calc(13.3 * var(--u));font-weight:500;
+        letter-spacing:calc(-0.3 * var(--u));gap:calc(9 * var(--u))}
+.btn-primary{background:var(--white-btn);color:var(--btn-ink);
+  padding-left:calc(18.2 * var(--u));padding-right:calc(19.2 * var(--u));
+  transition:background .18s ease,transform .18s ease}
+.btn-primary:hover{background:#fff}
+.btn-ghost{background:var(--glass-fill);color:#d9d9d9;padding:0 calc(17.4 * var(--u));
+  border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(2px);
+  backdrop-filter:blur(2px);transition:background .18s ease,border-color .18s ease}
+.btn-ghost:hover{background:rgba(0,0,0,.66);border-color:rgba(255,255,255,.16)}
+.btn-lg .arw{width:calc(13 * var(--u));height:calc(10.8 * var(--u))}
+
+.hero-stats{display:flex;justify-content:center;gap:calc(42 * var(--u));
+  margin-top:calc(42 * var(--u));flex-wrap:wrap}
+.hero-stats .stat b{display:block;font-size:calc(23 * var(--u));font-weight:600;letter-spacing:calc(-.3 * var(--u));line-height:1}
+.hero-stats .stat span{display:block;margin-top:calc(7 * var(--u));font-size:calc(11.5 * var(--u));
+  color:var(--ink-muted);opacity:.72;letter-spacing:calc(.06em);text-transform:uppercase}
+
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:99px}
+
+.menu{display:none}
+@keyframes menuIn{from{opacity:0;transform:translateY(-6px) scale(.985)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   HERO BREAKPOINTS
+   ============================================================ */
+@media (max-width:1160px){
+  :root{
+    --u: min(
+      max(0.9px, min(calc(100vw / 1280), calc(100dvh / 760))),
+      calc((100vw - 72px) / 575),
+      calc(100dvh / 620)
+    );
+  }
+  .nav{height:max(58px, calc(67 * var(--u)));
+       padding-left:max(24px, calc(28 * var(--u)));
+       padding-right:max(24px, calc(28 * var(--u)))}
+  .nav-links,.nav-actions{display:none}
+  .burger{display:flex;width:max(46px, calc(48 * var(--u)));
+          height:max(38px, calc(34 * var(--u)));border-radius:999px}
+  .sub{font-size:max(16px, calc(17.4 * var(--u)));line-height:max(25px, calc(27 * var(--u)))}
+  .ctas{margin-top:max(26px, calc(21.8 * var(--u)));gap:max(10px, calc(7 * var(--u)))}
+  .btn-lg{height:max(44px, calc(39 * var(--u)));border-radius:max(22px, calc(19.5 * var(--u)));
+          font-size:max(15px, calc(13.3 * var(--u)));gap:max(10px, calc(9 * var(--u)))}
+  .btn-primary{padding-left:max(21px, calc(18.2 * var(--u)));
+               padding-right:max(22px, calc(19.2 * var(--u)))}
+  .btn-ghost{padding-left:max(20px, calc(17.4 * var(--u)));
+             padding-right:max(21px, calc(18.4 * var(--u)))}
+  .btn-lg .arw{width:max(14px, calc(13 * var(--u)));height:max(11.6px, calc(10.8 * var(--u)))}
+  .menu{position:absolute;top:calc(max(58px, calc(67 * var(--u))) - 6px);
+        right:max(24px, calc(28 * var(--u)));width:min(320px, calc(100vw - 48px));
+        background:rgba(10,10,12,.86);-webkit-backdrop-filter:blur(22px);
+        backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.09);
+        border-radius:20px;padding:10px 8px 12px;flex-direction:column;
+        box-shadow:0 24px 60px rgba(0,0,0,.55);transform-origin:top right;z-index:5}
+  .menu.open{display:flex;animation:menuIn .18s ease both}
+  .menu a{color:var(--ink-muted);text-decoration:none;font-size:15px;font-weight:500;
+          letter-spacing:calc(-0.15 * var(--u));padding:12px 14px;border-radius:12px;
+          transition:background .18s ease,color .18s ease}
+  .menu a:hover{background:rgba(255,255,255,.06);color:#fff}
+  .menu .divider{height:1px;background:rgba(255,255,255,.08);margin:8px 14px}
+  .menu .m-start{display:flex;align-items:center;justify-content:center;gap:9px;
+    background:var(--white-btn);color:var(--btn-ink);margin:6px 8px 0;padding:13px 16px;
+    border-radius:14px;font-weight:600}
+  .menu .m-start:hover{background:#fff;color:var(--btn-ink)}
+  .menu .m-start .arw{width:13px;height:11px}
+}
+
+@media (max-width:552px){
+  :root{--u:1px}
+  .nav{height:56px;padding:0 20px}
+  .logo{gap:8px}
+  .logo-mark{width:30px;height:30px}
+  .logo-text{font-size:19px;letter-spacing:-.2px}
+  .burger{width:42px;height:36px}
+  .hero-inner{position:absolute;left:0;right:0;top:50%;width:auto;max-width:none;
+              padding:0 20px;transform:translateY(-47%)}
+  .hero-logo-wrap{width:96px;height:96px;margin-bottom:22px}
+  h1{font-size:min(54px, calc((100vw - 44px) / 13.5));line-height:1.08;letter-spacing:-.02em}
+  .sub{margin-top:16px;font-size:clamp(15.5px, 4vw, 16.5px);line-height:1.6;
+       letter-spacing:0;max-width:42ch;margin-left:auto;margin-right:auto}
+  .sub br{display:none}
+  .ctas{margin-top:24px;gap:10px;transform:none;flex-wrap:wrap}
+  .btn-lg{height:46px;border-radius:23px;font-size:15px;gap:9px}
+  .btn-primary{padding-left:20px;padding-right:21px}
+  .btn-ghost{padding-left:19px;padding-right:20px}
+  .btn-lg .arw{width:13px;height:11px}
+  .hero-stats{gap:28px;margin-top:30px}
+  .hero-stats .stat b{font-size:21px}
+  .menu{top:50px;left:16px;right:16px;width:auto}
+  .menu a{font-size:15.5px;padding:13px 14px}
+  .menu .m-start{padding:14px 16px}
+}
+
+@media (max-width:552px) and (max-height:460px){
+  h1{font-size:min(34px, calc((100vw - 44px) / 13.5))}
+  .sub{margin-top:12px;font-size:15px;line-height:1.5}
+  .ctas{margin-top:18px}
+  .hero-stats{margin-top:18px}
+  .hero-inner{transform:translateY(-44%)}
+}
+
+/* ============================================================
+   ENTRANCE SEQUENCE — runs once on first load, then detaches
+   ============================================================ */
+html.anim .ln{overflow:hidden;padding-top:.26em;margin-top:-.26em}
+html.anim .ln-i{transform:translateY(100%)}
+html.anim .logo, html.anim .nav-links a, html.anim .nav-actions .btn,
+html.anim .burger, html.anim .hero-logo-wrap, html.anim .sub, html.anim .ctas .btn,
+html.anim .hero-stats{opacity:0}
+.ln-i,.logo,.nav-links a,.nav-actions .btn,.hero-logo-wrap,.sub,.ctas .btn,.hero-stats{will-change:transform,opacity}
+
+@keyframes lineRise{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes subIn{from{opacity:0;transform:translateY(calc(14 * var(--u)));filter:blur(4px)}
+                 to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes subInFlat{from{opacity:0;transform:translateY(calc(12 * var(--u)))}
+                     to{opacity:1;transform:none}}
+@keyframes pillIn{from{opacity:0;transform:translateY(calc(8 * var(--u))) scale(.972)}
+                  to{opacity:1;transform:none}}
+@keyframes liftIn{from{opacity:0;transform:translateY(calc(9 * var(--u)))}
+                  to{opacity:1;transform:none}}
+@keyframes logoIn{
+  from{opacity:0;transform:translateY(calc(-2.4 * var(--u))) translateY(calc(9 * var(--u)))}
+  to  {opacity:1;transform:translateY(calc(-2.4 * var(--u)))}}
+
+html.anim.go .ln-i{animation:lineRise 1.05s var(--e-reveal) both}
+html.anim.go .ln:nth-child(1) .ln-i{animation-delay:.12s}
+html.anim.go .ln:nth-child(2) .ln-i{animation-delay:.22s}
+html.anim.go .logo{animation:logoIn .62s var(--e-soft) .46s both}
+html.anim.go .nav-links a{animation:liftIn .55s var(--e-soft) both}
+html.anim.go .nav-links a:nth-child(1){animation-delay:.540s}
+html.anim.go .nav-links a:nth-child(2){animation-delay:.585s}
+html.anim.go .nav-links a:nth-child(3){animation-delay:.630s}
+html.anim.go .nav-links a:nth-child(4){animation-delay:.675s}
+html.anim.go .nav-links a:nth-child(5){animation-delay:.720s}
+html.anim.go .hero-logo-wrap{animation:liftIn .55s var(--e-soft) .40s both}
+html.anim.go .sub{animation:subIn .85s var(--e-reveal) .58s both}
+html.anim.go .burger{animation:pillIn .55s var(--e-soft) .68s both}
+html.anim.go .btn-nav-start{animation:pillIn .55s var(--e-soft) .73s both}
+html.anim.go .ctas .btn-primary{animation:pillIn .70s var(--e-reveal) .90s both}
+html.anim.go .ctas .btn-ghost{animation:pillIn .70s var(--e-reveal) .97s both}
+html.anim.go .hero-stats{animation:liftIn .6s var(--e-soft) 1.02s both}
+
+@media (max-width:552px){
+  html.anim.go .sub{animation-name:subInFlat}
+  html.anim.go .ln-i{animation-duration:.92s}
+  html.anim.go .ctas .btn-primary{animation-delay:.84s}
+  html.anim.go .ctas .btn-ghost{animation-delay:.90s}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html.anim .ln{overflow:visible;padding-top:0;margin-top:0}
+  html.anim .ln-i{transform:none}
+  html.anim .logo, html.anim .nav-links a, html.anim .nav-actions .btn,
+  html.anim .burger, html.anim .hero-logo-wrap, html.anim .sub, html.anim .ctas .btn,
+  html.anim .hero-stats{opacity:1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ============================================================
+   SECTIONS (same design language, responsive units)
+   ============================================================ */
+.sec{position:relative;padding:96px 0;background:#000}
+.sec.alt{background:#07070a}
+.sec-inner{max-width:1120px;margin:0 auto;padding:0 28px}
+.sec-head{max-width:720px;margin-bottom:52px}
+.sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.sec-eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.sec-eyebrow::before{content:"";width:24px;height:1.5px;background:var(--accent)}
+.sec-title{font-size:clamp(30px,4vw,46px);font-weight:600;letter-spacing:-.03em;line-height:1.06;color:var(--ink);margin:0 0 16px}
+.sec-lede{color:var(--ink-muted);opacity:.85;font-size:clamp(16px,1.8vw,18px);line-height:1.65;font-weight:300}
+.grid{display:grid;gap:20px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:#101013;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:30px;
+  transition:transform .2s ease,border-color .2s ease}
+.card:hover{transform:translateY(-4px);border-color:rgba(29,78,216,.4)}
+.card .icon{width:46px;height:46px;border-radius:13px;background:rgba(29,78,216,.14);
+  display:flex;align-items:center;justify-content:center;color:var(--accent);margin-bottom:18px}
+.card .icon svg{width:22px;height:22px}
+.card h3{font-size:20px;font-weight:600;margin:0 0 10px;letter-spacing:-.01em}
+.card p{font-size:15px;color:var(--ink-muted);opacity:.85;line-height:1.6;font-weight:300}
+.card-num{display:block;font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--accent);margin-bottom:12px}
+
+.btn-s{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:48px;padding:0 24px;
+  border-radius:14px;font-weight:600;font-size:15px;font-family:inherit;border:0;cursor:pointer;text-decoration:none;transition:background .18s ease,color .18s ease}
+.btn-s.white{background:var(--white-btn);color:var(--btn-ink)}
+.btn-s.white:hover{background:#fff}
+.btn-s.ghost{background:var(--glass-fill);color:#e5e5e5;border:1px solid var(--glass-line)}
+.btn-s.ghost:hover{background:rgba(0,0,0,.6);border-color:rgba(255,255,255,.2)}
+.btn-s svg{width:16px;height:16px}
+
+/* marquee */
+.marquee{border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);
+  background:#050507;padding:24px 0;overflow:hidden}
+.marquee-label{font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);
+  opacity:.7;text-align:center;margin:0 0 18px}
+.marquee-track{display:flex;width:max-content;gap:12px;animation:scrollX 36s linear infinite}
+.marquee-chip{display:inline-flex;align-items:center;gap:9px;white-space:nowrap;font-size:15px;font-weight:500;
+  color:var(--ink-muted);padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03)}
+.marquee-chip::before{content:"◆";font-size:8px;color:var(--accent)}
+@keyframes scrollX{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* results band */
+.results-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+.results-grid .stat b{display:block;font-size:clamp(34px,4.6vw,50px);font-weight:600;letter-spacing:-.03em;color:var(--accent);line-height:1}
+.results-grid .stat span{display:block;margin-top:10px;font-size:14.5px;color:var(--ink-muted);opacity:.8;font-weight:400}
+.results-note{text-align:center;color:var(--ink-muted);opacity:.6;font-size:13px;margin-top:30px}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.step{position:relative;padding-top:16px}
+.step::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.1)}
+.step::after{content:"";position:absolute;top:0;left:0;width:46px;height:1px;background:var(--accent)}
+.step-num{display:block;font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--accent);margin-bottom:12px}
+.step h3{font-size:19px;font-weight:600;margin:0 0 9px}
+.step p{font-size:15px;color:var(--ink-muted);opacity:.85;line-height:1.6;font-weight:300}
+
+/* funnel */
+.funnel{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center;margin-top:60px;
+  padding:38px;border:1px solid rgba(255,255,255,.09);border-radius:22px;background:#0b0b0e}
+.funnel h3{font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px}
+.funnel .sub-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:22px}
+.funnel-stage{display:flex;align-items:center;gap:14px;padding:15px 0;border-top:1px solid rgba(255,255,255,.08)}
+.funnel-stage:first-of-type{border-top:0;padding-top:0}
+.funnel-stage .val{margin-left:auto;font-weight:600;font-size:17px}
+.funnel-stage .conv{font-size:13px;color:var(--ink-muted);opacity:.7;min-width:120px;text-align:right}
+.funnel-note{font-size:13px;color:var(--ink-muted);opacity:.6;margin-top:18px}
+
+/* comparison table */
+.table-scroll{overflow-x:auto;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:#0b0b0e}
+table.compare{width:100%;border-collapse:collapse;min-width:720px;font-size:15px}
+table.compare th,table.compare td{padding:17px 22px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}
+table.compare thead th{font-size:12.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);background:rgba(255,255,255,.02)}
+table.compare thead th.hl{color:var(--accent)}
+table.compare tbody tr:last-child td{border-bottom:0}
+table.compare td:first-child{font-weight:500;color:#e9e9e9}
+table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,216,.06)}
+.tick{color:var(--accent);font-weight:700}
+.cross{color:rgba(255,255,255,.3)}
+.partial{color:var(--ink-muted);opacity:.75}
+
+/* plans */
+.plan-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:start}
+.plan-card{border:1px solid rgba(29,78,216,.3);border-radius:22px;background:#0b0b0e;padding:38px}
+.plan-tag{display:inline-block;font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:#050505;background:var(--accent);padding:6px 13px;border-radius:999px;margin-bottom:18px}
+.plan-card h3{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 10px}
+.plan-card>p{font-size:16px;color:var(--ink-muted);opacity:.85;font-weight:300;margin:0 0 24px;line-height:1.6}
+.plan-feats{display:flex;flex-direction:column;gap:13px;margin:0 0 30px;padding:0;list-style:none}
+.plan-feats li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;color:#e9e9e9}
+.plan-feats li::before{content:"✓";flex:0 0 auto;width:22px;height:22px;border-radius:7px;
+  background:rgba(29,78,216,.16);color:var(--accent);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.callouts{display:flex;flex-direction:column;gap:16px}
+.callout{display:flex;gap:16px;align-items:flex-start;border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:22px;background:#0b0b0e}
+.callout .dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:var(--accent);margin-top:6px}
+.callout h4{font-size:16.5px;font-weight:600;margin:0 0 4px}
+.callout p{font-size:14.5px;color:var(--ink-muted);opacity:.85;font-weight:300;line-height:1.55}
+
+/* faq */
+.faq-list{display:flex;flex-direction:column;gap:12px;max-width:820px}
+.faq-item{border:1px solid rgba(255,255,255,.09);border-radius:14px;background:#0b0b0e;overflow:hidden}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;
+  background:none;border:0;color:#fff;font-family:inherit;font-size:17px;font-weight:600;text-align:left;cursor:pointer}
+.faq-q .plus{flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:rgba(29,78,216,.14);color:var(--accent);
+  font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;transition:transform .2s ease}
+.faq-item.open .plus{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-a p{padding:0 22px 20px;font-size:15.5px;color:var(--ink-muted);opacity:.85;line-height:1.65;font-weight:300}
+
+/* contact */
+.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:50px;align-items:start}
+.trust{display:flex;flex-direction:column;gap:12px;margin:28px 0 0;padding:0;list-style:none}
+.trust li{display:flex;align-items:center;gap:11px;font-size:15px;color:#e9e9e9}
+.trust li::before{content:"✓";flex:0 0 auto;width:20px;height:20px;border-radius:6px;background:rgba(29,78,216,.16);
+  color:var(--accent);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+.form-card{border:1px solid rgba(255,255,255,.09);border-radius:20px;background:#0b0b0e;padding:34px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.field label{font-size:13.5px;font-weight:500;color:#e9e9e9}
+.field input,.field select{height:50px;padding:0 15px;border-radius:11px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);color:#fff;font-family:inherit;font-size:15.5px;transition:border-color .15s ease}
+.field input::placeholder{color:rgba(237,237,237,.45)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
+.field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ededed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;cursor:pointer}
+.field select option{background:#0b0b0e;color:#fff}
+.form-note{font-size:13px;color:var(--ink-muted);opacity:.7;text-align:center;margin:16px 0 0}
+.form-msg{display:none;font-size:14.5px;margin:14px 0 0;padding:13px 15px;border-radius:10px;text-align:center}
+.form-msg.err{display:block;color:#ffb4b4;background:rgba(255,90,90,.1);border:1px solid rgba(255,90,90,.25)}
+.form-success{display:none;text-align:center;padding:40px 20px}
+.form-success .big{font-size:22px;font-weight:700;margin-bottom:10px}
+.form-success p{color:var(--ink-muted);opacity:.85}
+
+/* footer */
+.site-footer{border-top:1px solid rgba(255,255,255,.08);padding:56px 0 40px;background:#050507}
+.footer-top{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08)}
+.footer-tag{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.footer-nav{display:flex;gap:22px;flex-wrap:wrap}
+.footer-nav a{font-size:14.5px;color:var(--ink-muted);transition:color .15s ease}
+.footer-nav a:hover{color:#fff}
+.footer-bottom{padding-top:24px;font-size:13.5px;color:var(--ink-muted);opacity:.7}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--e-reveal),transform .7s var(--e-reveal)}
+.reveal.in{opacity:1;transform:none}
+
+/* section responsive */
+@media (max-width:1020px){
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .results-grid{grid-template-columns:repeat(2,1fr);gap:32px}
+  .funnel{grid-template-columns:1fr;gap:30px}
+  .plan-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr;gap:40px}
+}
+@media (max-width:640px){
+  .sec{padding:72px 0}
+  .g3,.g4{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none}
+}
+</style>
+<script>
+/* ENTRANCE — arm synchronously to avoid a flash of unanimated content. */
+(function(){
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.documentElement.classList.add('anim');
+  var started=false, cleaned=false, bootTimer=null, safety=null;
+  function clean(){
+    if(cleaned) return; cleaned=true;
+    if(safety!==null){clearTimeout(safety);safety=null;}
+    document.removeEventListener('animationend', onEnd, true);
+    var d=document.documentElement; d.classList.remove('anim'); d.classList.remove('go');
+  }
+  function onEnd(e){
+    if(e.animationName==='pillIn' && e.target.classList.contains('btn-ghost')) clean();
+  }
+  function start(){
+    if(started) return; started=true;
+    if(bootTimer!==null){clearTimeout(bootTimer);bootTimer=null;}
+    document.addEventListener('animationend', onEnd, true);
+    safety=setTimeout(clean, 2600);
+    document.documentElement.classList.add('go');
+  }
+  function boot(){
+    bootTimer=setTimeout(start, 900);
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(start, start); }
+    else { start(); }
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot); }
+  else { boot(); }
+})();
+</script>
+</head>
+<body>
+<main>
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="bg" role="img" aria-label="Stylised globe of Earth rendered as a purple dot matrix against a starfield, slowly rotating">
+      <video class="bg-video is-active" id="bgVideoA" autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp">
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
+      </video>
+      <video class="bg-video" id="bgVideoB" muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp">
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <header class="nav">
+      <a class="logo" href="#top">
+        <img class="logo-mark" src="logo.png" alt="Dash Media" width="34" height="34">
+        <span class="logo-text">DASH MEDIA</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#benefits">Benefits</a>
+        <a href="#process">Process</a>
+        <a href="#results">Results</a>
+        <a href="#plans">Plans</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn btn-nav-start" href="#contact">Get Leads Now<svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span></button>
+    </header>
+
+    <nav class="menu" id="menu" aria-label="Mobile">
+      <a href="#benefits">Benefits</a>
+      <a href="#process">Process</a>
+      <a href="#results">Results</a>
+      <a href="#plans">Plans</a>
+      <a href="#contact">Contact</a>
+      <div class="divider"></div>
+      <a class="m-start" href="#contact">Get Leads Now<svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </nav>
+
+    <div class="hero-inner">
+      <div class="hero-logo-wrap">
+        <img class="hero-logo" src="logo.png" alt="Dash Media" width="150" height="150">
+        <span class="hero-logo-glow" aria-hidden="true"></span>
+        <span class="hero-logo-ring" aria-hidden="true"></span>
+      </div>
+      <h1>
+        <span class="ln"><span class="ln-i">Turn Clicks Into</span></span>
+        <span class="ln"><span class="ln-i em">Closings.</span></span>
+      </h1>
+      <p class="sub">Dash is a done-for-you lead generation system for mortgage lenders, combining<br>targeted advertising, qualified lead funnels, automated follow-up,<br>and a fully managed CRM to turn ad spend into real opportunities.</p>
+      <div class="ctas">
+        <a class="btn btn-lg btn-primary" href="#contact">Request Pricing<svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-lg btn-ghost" href="#process">See How It Works</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>100K+</b><span>Leads Generated</span></div>
+        <div class="stat"><b>10–15%</b><span>Avg. Conversion</span></div>
+        <div class="stat"><b>Instant</b><span>Real-Time Delivery</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="marquee">
+    <p class="marquee-label">Built for mortgage brokerages, brokers &amp; lending teams across North America</p>
+    <div class="marquee-track" id="trustTrack">
+      <span class="marquee-chip">Independent Brokerages</span>
+      <span class="marquee-chip">Regional Lenders</span>
+      <span class="marquee-chip">Mortgage Networks</span>
+      <span class="marquee-chip">Loan Originators</span>
+      <span class="marquee-chip">National Firms</span>
+      <span class="marquee-chip">Credit Unions</span>
+      <span class="marquee-chip">Broker Teams</span>
+    </div>
+  </div>
+
+  <!-- WHAT YOU GET -->
+  <section class="sec" id="whatyouget">
+    <div class="sec-inner">
+      <div class="sec-head center reveal">
+        <span class="sec-eyebrow">Full-Service</span>
+        <h2 class="sec-title">Everything needed to turn ad spend into a managed pipeline.</h2>
+      </div>
+      <div class="grid g4">
+        <div class="card reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div><h3>Campaign Management</h3><p>Full Facebook &amp; Instagram ad management; budget allocation &amp; optimization.</p></div>
+        <div class="card reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h18M3 12h18M3 19h18"/><path d="M7 3v4M12 10v4M17 17v4"/></svg></div><h3>Dash CRM</h3><p>Real-time lead delivery; appointment &amp; calendar tracking.</p></div>
+        <div class="card reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v5c0 5-3.3 8.6-7 10-3.7-1.4-7-5-7-10V6l7-3z"/><path d="M9.5 12l2 2 3.5-4"/></svg></div><h3>Qualification &amp; Verification</h3><p>OTP phone &amp; email verification; spam &amp; fake submission reduction.</p></div>
+        <div class="card reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3"/></svg></div><h3>AI + Automation</h3><p>Immediate AI lead response; 24/7 automated follow-up.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section class="sec alt" id="benefits">
+    <div class="sec-inner">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">Why Dash</span>
+        <h2 class="sec-title">Why Serious Originators Choose Dash.</h2>
+        <p class="sec-lede">Most agencies try to serve everyone. We focus entirely on the mortgage industry to deliver unmatched precision.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card reveal"><span class="card-num">01</span><h3>Mortgage-Only Focus</h3><p>Specialists who serve one niche and one niche only. We know the funnels, the objections, and what actually converts.</p></div>
+        <div class="card reveal"><span class="card-num">02</span><h3>OTP Verified Leads</h3><p>Every phone number is validated by SMS one-time-passcode before it reaches your CRM, so you stop wasting calls on dead numbers.</p></div>
+        <div class="card reveal"><span class="card-num">03</span><h3>Done-For-You System</h3><p>We build, launch and manage the entire lead engine for you: funnels, tracking, verification and delivery, handled end to end.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="sec" id="results">
+    <div class="sec-inner">
+      <div class="results-grid">
+        <div class="stat reveal"><b>100K+</b><span>Leads Generated</span></div>
+        <div class="stat reveal"><b>9K+</b><span>Calls Booked</span></div>
+        <div class="stat reveal"><b>10–15%</b><span>Avg Conversion Rate</span></div>
+        <div class="stat reveal"><b>20+</b><span>Hours Saved Per Week</span></div>
+      </div>
+      <p class="results-note">*Illustrative benchmarks based on typical client outcomes. Results vary and are not guaranteed.</p>
+    </div>
+  </section>
+
+  <!-- FEATURE TICKER -->
+  <div class="marquee">
+    <div class="marquee-track" id="featTrack">
+      <span class="marquee-chip">Real-Time Delivery</span>
+      <span class="marquee-chip">OTP Verified Numbers</span>
+      <span class="marquee-chip">Seamless CRM Integration</span>
+      <span class="marquee-chip">Instant Lead Delivery</span>
+      <span class="marquee-chip">Custom Lead Filters</span>
+      <span class="marquee-chip">Own Your Data</span>
+    </div>
+  </div>
+
+  <!-- PROCESS -->
+  <section class="sec alt" id="process">
+    <div class="sec-inner">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">How It Works</span>
+        <h2 class="sec-title">The System Behind Your Next Deal.</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><span class="step-num">STEP 01</span><h3>Build a Funnel That Filters</h3><p>We deploy funnels engineered specifically to capture high-intent mortgage inquiries, not tire-kickers.</p></div>
+        <div class="step reveal"><span class="step-num">STEP 02</span><h3>Verify Before You Call</h3><p>Every lead passes strict OTP SMS verification. No ghosts, no disconnected numbers, no wasted dials.</p></div>
+        <div class="step reveal"><span class="step-num">STEP 03</span><h3>Deliver in Real Time</h3><p>Leads push instantly to your CRM or inbox the moment they submit a verified application.</p></div>
+        <div class="step reveal"><span class="step-num">STEP 04</span><h3>Optimize &amp; Scale</h3><p>We monitor performance continuously and scale volume to match your team's processing capacity.</p></div>
+      </div>
+      <div class="funnel reveal">
+        <div>
+          <div class="sub-label">Mid-volume account</div>
+          <h3>Sample Monthly Funnel</h3>
+          <div class="funnel-stage"><span>Ad Impressions</span><span class="val">486,200</span></div>
+          <div class="funnel-stage"><span>Funnel Submissions</span><span class="conv">0.44% click &amp; submit</span><span class="val">2,140</span></div>
+          <div class="funnel-stage"><span>OTP Verified</span><span class="conv">81% pass OTP</span><span class="val">1,734</span></div>
+          <div class="funnel-stage"><span>Delivered to CRM</span><span class="conv">100% pushed instantly</span><span class="val">1,734</span></div>
+        </div>
+        <div>
+          <p class="sec-lede">Every stage compounds. The funnel filters out tire-kickers early, so the leads that hit your CRM are already verified and ready to convert.</p>
+          <a class="btn-s white" href="#contact" style="margin-top:22px">Build My Funnel<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+      <p class="funnel-note reveal">*Illustrative figures for a typical mid-volume account. Individual results vary.</p>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="sec" id="comparison">
+    <div class="sec-inner">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">The Comparison</span>
+        <h2 class="sec-title">The Smart Choice.</h2>
+        <p class="sec-lede">How Dash Media compares to your other options.</p>
+      </div>
+      <div class="table-scroll reveal">
+        <table class="compare">
+          <thead>
+            <tr><th>Feature</th><th class="hl">Dash Media</th><th>In-House Hire</th><th>Other Lead Vendors</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Time to Launch</td><td class="hl">3–5 Days</td><td>4–6 Weeks</td><td>7–14 Days</td></tr>
+            <tr><td>Customized Solution</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="partial">Partial</span></td></tr>
+            <tr><td>Exclusive Leads</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
+            <tr><td>OTP Verified Leads</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
+            <tr><td>No Hidden Fees</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="partial">Partial</span></td></tr>
+            <tr><td>Pricing</td><td class="hl">Flat, transparent packages</td><td>High salary + benefits</td><td>Hidden fees + setup costs</td></tr>
+            <tr><td>CRM Integration</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="partial">Partial</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANS -->
+  <section class="sec alt" id="plans">
+    <div class="sec-inner">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">Pricing</span>
+        <h2 class="sec-title">One System. Built Around You.</h2>
+        <p class="sec-lede">A single, transparent engagement. No confusing tiers, no per-lead upsells.</p>
+      </div>
+      <div class="plan-grid">
+        <div class="plan-card reveal">
+          <span class="plan-tag">Done-For-You System</span>
+          <h3>Your Own Lead Engine</h3>
+          <p>We build your entire in-house lead generation system from scratch, and you own it.</p>
+          <ul class="plan-feats">
+            <li>Custom funnel creation</li>
+            <li>Ad account setup &amp; management</li>
+            <li>OTP verification built in</li>
+            <li>CRM automation workflows</li>
+            <li>Dedicated account manager</li>
+            <li>You own your data, forever</li>
+          </ul>
+          <a class="btn-s white" href="#contact">Get Pricing<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="callouts">
+          <div class="callout reveal"><span class="dot"></span><div><h4>Built for your capacity</h4><p>Volume scales with what your team can actually convert, never more, never less.</p></div></div>
+          <div class="callout reveal"><span class="dot"></span><div><h4>No long-term lock-in</h4><p>No multi-year contracts and no hidden fees buried in the fine print.</p></div></div>
+          <div class="callout reveal"><span class="dot"></span><div><h4>Live in 3–5 days</h4><p>Fast onboarding so you're collecting verified leads inside a week, not a quarter.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq">
+    <div class="sec-inner">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">FAQ</span>
+        <h2 class="sec-title">Common questions.</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How much does it cost?<span class="plus">+</span></button><div class="faq-a"><p>Pricing depends on your target market, monthly volume and how much of the system you want built out. Fill in the form below and we'll send a custom quote within 24 hours.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How are leads delivered to me?<span class="plus">+</span></button><div class="faq-a"><p>Verified leads are pushed in real time straight into your CRM or inbox the moment a prospect completes OTP verification. No manual exports.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How long does it take to get started?<span class="plus">+</span></button><div class="faq-a"><p>Most systems are built, tested and launched within 3–5 business days of kickoff.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">Can I filter leads by specific criteria?<span class="plus">+</span></button><div class="faq-a"><p>Yes. We configure filters around your ideal borrower profile (loan type, location, credit tier and more) before your funnel goes live.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">What if a lead doesn't meet my criteria?<span class="plus">+</span></button><div class="faq-a"><p>We continuously monitor lead quality and adjust targeting and filters together with you to keep match rates high.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="sec alt" id="contact">
+    <div class="sec-inner">
+      <div class="contact-grid">
+        <div class="reveal">
+          <span class="sec-eyebrow">Get Started</span>
+          <h2 class="sec-title">Get More Mortgage Clients. Without Paying for Ads Upfront.</h2>
+          <p class="sec-lede" style="margin-top:16px">Tell us about your business and we'll put together a custom quote within 24 hours.</p>
+          <ul class="trust">
+            <li>No spam, ever</li>
+            <li>No long-term contracts</li>
+            <li>We reach out within 24 hours</li>
+          </ul>
+        </div>
+        <div class="form-card reveal">
+          <form id="contactForm" novalidate>
+            <div class="form-row">
+              <div class="field"><label for="fullName">Full Name</label><input id="fullName" name="fullName" type="text" placeholder="Jane Doe" required autocomplete="name"></div>
+              <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" placeholder="jane@brokerage.com" required autocomplete="email"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" placeholder="(555) 123-4567" required autocomplete="tel"></div>
+              <div class="field"><label for="company">Company</label><input id="company" name="company" type="text" placeholder="Your Brokerage" required autocomplete="organization"></div>
+            </div>
+            <div class="field">
+              <label for="volume">Monthly Lead Volume</label>
+              <select id="volume" name="volume" required>
+                <option value="" disabled selected>Select volume</option>
+                <option value="10–25">10–25 leads/month</option>
+                <option value="26–50">26–50 leads/month</option>
+                <option value="51–100">51–100 leads/month</option>
+                <option value="101–250">101–250 leads/month</option>
+                <option value="250+">250+ leads/month</option>
+              </select>
+            </div>
+            <button class="btn-s white" type="submit" id="submitBtn" style="width:100%">Get My Custom Quote<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            <p class="form-msg" id="formMsg"></p>
+            <p class="form-note">No spam. No long-term contracts. We'll reach out within 24 hours.</p>
+          </form>
+          <div class="form-success" id="formSuccess">
+            <div class="big">Thanks! Your request has been received.</div>
+            <p>We'll be in touch within a few hours.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="sec-inner">
+      <div class="footer-top">
+        <a class="logo" href="#top" style="text-decoration:none"><img class="logo-mark" src="logo.png" alt="Dash Media" width="34" height="34"><span class="footer-tag" style="font-family:inherit">Mortgage Leads. Mortgage Only.</span></a>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="#benefits">Benefits</a>
+          <a href="#process">Process</a>
+          <a href="#results">Results</a>
+          <a href="#plans">Plans</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">© 2026 Dash Media. All rights reserved.</div>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function(){
+  /* burger / mobile menu */
+  var burger=document.getElementById('burger'), menu=document.getElementById('menu');
+  function setMenu(open){
+    menu.classList.toggle('open',open);
+    burger.setAttribute('aria-expanded',open?'true':'false');
+    burger.setAttribute('aria-label',open?'Close menu':'Open menu');
+  }
+  if(burger && menu){
+    burger.addEventListener('click',function(e){e.stopPropagation();setMenu(!menu.classList.contains('open'));});
+    menu.addEventListener('click',function(e){if(e.target.closest('a'))setMenu(false);});
+    document.addEventListener('click',function(e){if(menu.classList.contains('open')&&!menu.contains(e.target)&&!burger.contains(e.target))setMenu(false);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&menu.classList.contains('open')){setMenu(false);burger.focus();}});
+  }
+
+  /* reveal on scroll */
+  var els=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+    els.forEach(function(el){io.observe(el);});
+  } else { els.forEach(function(el){el.classList.add('in');}); }
+
+  /* marquee duplication */
+  ['trustTrack','featTrack'].forEach(function(id){var t=document.getElementById(id);if(t)t.innerHTML+=t.innerHTML;});
+
+  /* faq */
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    var q=item.querySelector('.faq-q'), a=item.querySelector('.faq-a');
+    q.addEventListener('click',function(){
+      var open=item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(o){o.classList.remove('open');o.querySelector('.faq-a').style.maxHeight=null;o.querySelector('.faq-q').setAttribute('aria-expanded','false');});
+      if(!open){item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';q.setAttribute('aria-expanded','true');}
+    });
+  });
+
+  /* contact form */
+  var form=document.getElementById('contactForm'), submitBtn=document.getElementById('submitBtn'), msg=document.getElementById('formMsg'), success=document.getElementById('formSuccess');
+  var btnLabel=submitBtn.innerHTML;
+  form.addEventListener('submit',function(e){
+    e.preventDefault(); msg.className='form-msg'; msg.textContent='';
+    if(!form.checkValidity()){ form.reportValidity(); return; }
+    var payload={fullName:form.fullName.value.trim(),email:form.email.value.trim(),phone:form.phone.value.trim(),company:form.company.value.trim(),volume:form.volume.value};
+    submitBtn.disabled=true; submitBtn.textContent='Sending...';
+    fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(res){ if(!res.ok) throw new Error(res.status); return res.json(); })
+    .then(function(){ form.style.display='none'; success.style.display='block'; })
+    .catch(function(){ msg.className='form-msg err'; msg.textContent='Something went wrong sending your request. Please try again.'; submitBtn.disabled=false; submitBtn.innerHTML=btnLabel; });
+  });
+})();
+</script>
+
+<script>
+/* BACKGROUND VIDEO — cross-fade the two copies at the 10s loop point. */
+(function(){
+  var A=document.getElementById('bgVideoA'), B=document.getElementById('bgVideoB');
+  if(!A||!B) return;
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    A.removeAttribute('autoplay'); A.pause(); B.pause();
+    try{A.currentTime=0;}catch(e){} return;
+  }
+  var FADE=.9, cur=A, nxt=B, swapping=false;
+  function play(v){var p=v.play(); if(p&&typeof p.then==='function')p.then(null,function(){});}
+  play(A);
+  function tick(){
+    if(swapping||!cur.duration) return;
+    if(cur.duration-cur.currentTime>FADE) return;
+    swapping=true; var out=cur;
+    nxt.currentTime=0; play(nxt);
+    nxt.classList.add('is-active'); out.classList.remove('is-active');
+    var t=cur; cur=nxt; nxt=t;
+    setTimeout(function(){ out.pause(); try{out.currentTime=0;}catch(e){} swapping=false; }, FADE*1000+100);
+  }
+  A.addEventListener('timeupdate',tick);
+  B.addEventListener('timeupdate',tick);
+})();
+</script>
+</body>
+</html>
