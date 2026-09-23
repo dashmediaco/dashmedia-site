@@ -791,8 +791,8 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
               <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" placeholder="jane@brokerage.com" required autocomplete="email"></div>
             </div>
             <div class="form-row">
-              <div class="field"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" placeholder="(555) 123-4567" required autocomplete="tel"></div>
-              <div class="field"><label for="company">Company</label><input id="company" name="company" type="text" placeholder="Your Brokerage" required autocomplete="organization"></div>
+              <div class="field"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" placeholder="(555) 123-4567" required autocomplete="tel" pattern="^[0-9\s().+-]{7,20}$" title="Enter a valid phone number"></div>
+              <div class="field"><label for="company">Company (Optional)</label><input id="company" name="company" type="text" placeholder="Your Brokerage" autocomplete="organization"></div>
             </div>
             <div class="field">
               <label for="volume">Monthly Lead Volume</label>
@@ -874,6 +874,12 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
 
   /* contact form */
   var form=document.getElementById('contactForm'), submitBtn=document.getElementById('submitBtn'), msg=document.getElementById('formMsg'), success=document.getElementById('formSuccess');
+  var phoneInput=document.getElementById('phone');
+  if(phoneInput){
+    phoneInput.addEventListener('input',function(){
+      this.value=this.value.replace(/[^0-9()+\-.\s]/g,'');
+    });
+  }
   var btnLabel=submitBtn.innerHTML;
   form.addEventListener('submit',function(e){
     e.preventDefault(); msg.className='form-msg'; msg.textContent='';
