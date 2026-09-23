@@ -1,4 +1,4 @@
-// POST /api/contact — relays the quote form to GoHighLevel.
+// POST /api/contact — relays the consultation form to GoHighLevel.
 // Deploy as a Vercel serverless function (or any Node 18+ host).
 // Requires the environment variable GHL_WEBHOOK_URL (the GHL Inbound Webhook URL).
 module.exports = async function handler(req, res) {
@@ -8,7 +8,7 @@ module.exports = async function handler(req, res) {
   }
 
   var body = req.body || {};
-  var required = ['fullName', 'email', 'phone', 'company', 'volume'];
+  var required = ['fullName', 'email', 'phone', 'volume'];
   var missing = required.filter(function (k) {
     return typeof body[k] !== 'string' || !body[k].trim();
   });
@@ -17,6 +17,10 @@ module.exports = async function handler(req, res) {
   }
   if (!/.+@.+\..+/.test(body.email)) {
     return res.status(400).json({ ok: false, error: 'Invalid email' });
+  }
+  var phoneDigits = (body.phone.match(/\d/g) || []).length;
+  if (phoneDigits < 10) {
+    return res.status(400).json({ ok: false, error: 'Invalid phone number' });
   }
 
   var webhook = process.env.GHL_WEBHOOK_URL;
@@ -32,7 +36,7 @@ module.exports = async function handler(req, res) {
         fullName: body.fullName.trim(),
         email: body.email.trim(),
         phone: body.phone.trim(),
-        company: body.company.trim(),
+        company: (body.company || '').trim(),
         volume: body.volume,
         source: 'dashmediaco.com contact form',
         submittedAt: new Date().toISOString()
