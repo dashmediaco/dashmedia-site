@@ -1,9 +1,12 @@
 {
-  "name": "dashmedia-site",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Dash Media landing page + contact form relay to GoHighLevel.",
-  "engines": {
-    "node": "24.x"
-  }
+    "name": "dashmedia-site",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Dash Media landing page + contact form relay to GoHighLevel.",
+    "engines": {
+          "node": "24.x"
+    },
+    "dependencies": {
+          "stripe": "^16.0.0"
+    }
 }
