@@ -62,7 +62,7 @@ async function schedulePriceEscalation(stripeClient, subscriptionId, isSandbox) 
   await stripeClient.subscriptionSchedules.update(schedule.id, {
     end_behavior: 'release',
     phases: [
-      { start_date: schedule.current_phase.start_date, items: [{ price: process.env[prefix + 'PRICE_500'], quantity: 1 }], iterations: 1 },
+      { start_date: schedule.phases[0].start_date, items: [{ price: process.env[prefix + 'PRICE_500'], quantity: 1 }], iterations: 1 },
       { items: [{ price: process.env[prefix + 'PRICE_500'], quantity: 1 }], iterations: 1 },
       { items: [{ price: process.env[prefix + 'PRICE_499'], quantity: 1 }], iterations: 1 },
       { items: [{ price: process.env[prefix + 'PRICE_1000'], quantity: 1 }] }
