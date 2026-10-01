@@ -19,9 +19,13 @@
 //   GHL_PAYMENT_WEBHOOK_URL  GHL Inbound Webhook URL for "Payment Received"
 //   GHL_SANDBOX_PAYMENT_WEBHOOK_URL Optional sandbox GHL webhook URL
 
-var stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+var stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2025-05-28.basil'});
 var sandboxStripe = process.env.STRIPE_SANDBOX_SECRET_KEY
-  ? require('stripe')(process.env.STRIPE_SANDBOX_SECRET_KEY)
+  ? require('stripe')(process.env.STRIPE_SANDBOX_SECRET_KEY, {
+      apiVersion: '2025-05-28.basil'
+})
   : null;
 
 // Turn off Vercel's automatic JSON body parsing so we can read the raw
