@@ -1,5 +1,6 @@
 var DEFAULT_CLIENT_ID = 'demo';
-var DEFAULT_PORTAL_BASE_URL = 'https://app.dashmediaco.com';
+var DEFAULT_PORTAL_BASE_URL = 'https://login.dashmediaco.com';
+
 var DEMO_CLIENT = {
   id: 'demo',
   name: 'Dash Mortgage Automation Demo',
@@ -89,7 +90,7 @@ function normalizePortalBaseUrl(value) {
 }
 
 function getUniversalLoginUrl(portal) {
-  var base = normalizePortalBaseUrl(portal.portalBaseUrl || DEFAULT_PORTAL_BASE_URL).replace('https://app.gohighlevel.com', DEFAULT_PORTAL_BASE_URL);
+  var base = normalizePortalBaseUrl(portal.portalBaseUrl || DEFAULT_PORTAL_BASE_URL); if (base === 'https://app.gohighlevel.com' || base === 'https://app.dashmediaco.com') base = DEFAULT_PORTAL_BASE_URL;
   return new URL('/', base).toString();
 }
 
