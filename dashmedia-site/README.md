@@ -11,7 +11,7 @@ serverless functions for the contact form and client portal routing.
 | `index.html` | The entire page — hero, all sections, and the contact form. |
 | `logo.png` | The DASH logo (512×512, transparent background). |
 | `api/contact.js` | `POST /api/contact` handler — relays form submissions to GoHighLevel. |
-| `api/client-login.js` | `GET /client-login` — sends all users to the shared HighLevel sign-in. |
+| `api/client-login.js` | `GET /client-login` — redirects all users to the Dash-branded sign-in. |
 | `api/client-portal-admin.js` | Protected `POST /api/client-portal-admin` — creates or updates client routing records. |
 | `lib/client-portal-store.js` | Server-side Redis data access and portal URL validation. |
 | `vercel.json` | Vercel project config. |
@@ -57,7 +57,7 @@ the existing "Lead Intake" automation.
 ## Client login
 
 All **Client Login** links point to the same `/client-login` route. Redis stores
-the portal registry and shared login domain. The route redirects to the root of
+the portal registry and shared login domain. The shared sign-in host is app.dashmediaco.com. The route redirects to the root of
 that domain and never appends a location ID, so it does not force the Demo
 subaccount.
 
@@ -70,8 +70,8 @@ The Redis registry currently includes the `demo` record for **Dash Mortgage
 Automation Demo**. It stores each client's ID, display name, HighLevel location
 ID, login-domain base URL, status, and update time. The default record controls
 the shared login domain only; it does not select the company shown after sign-in.
-Until a branded login domain is configured in HighLevel, the current host is
-`app.gohighlevel.com`.
+The current Dash-branded login host is
+`app.dashmediaco.com`.
 
 ### Add or update a client record
 
@@ -84,7 +84,7 @@ token in the `Authorization: Bearer ...` header:
   "id": "new-client",
   "name": "Client Agency",
   "locationId": "GHL_LOCATION_ID",
-  "portalBaseUrl": "https://app.gohighlevel.com",
+  "portalBaseUrl": "https://app.dashmediaco.com",
   "status": "active",
   "setAsDefault": false
 }
@@ -92,7 +92,7 @@ token in the `Authorization: Bearer ...` header:
 
 Set `setAsDefault` to `true` only when intentionally changing the shared
 login domain; it does not choose a client's subaccount after login. Use the same
-shared login domain for client records. To use a white-label login domain later,
+shared login domain for client records. The shared login domain is set in Redis;
 set the default record's `portalBaseUrl` to your shared HTTPS app domain. Only
 the server can read or write Redis credentials; no database token is sent to the
 browser.
