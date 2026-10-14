@@ -61,7 +61,7 @@ the existing "Lead Intake" automation.
 ## Client login
 
 All **Client Login** links point to the same `/client-login` route. Redis stores
-the portal registry and shared login domain. The shared sign-in host is app.dashmediaco.com. The route redirects to the root of
+the portal registry and shared login domain. The shared sign-in host is login.dashmediaco.com. The route redirects to the root of
 that domain and never appends a location ID, so it does not force the Demo
 subaccount.
 
@@ -75,7 +75,7 @@ Automation Demo**. It stores each client's ID, display name, HighLevel location
 ID, login-domain base URL, status, and update time. The default record controls
 the shared login domain only; it does not select the company shown after sign-in.
 The current Dash-branded login host is
-`app.dashmediaco.com`.
+`login.dashmediaco.com`.
 
 ### Add or update a client record
 
@@ -88,7 +88,7 @@ token in the `Authorization: Bearer ...` header:
   "id": "new-client",
   "name": "Client Agency",
   "locationId": "GHL_LOCATION_ID",
-  "portalBaseUrl": "https://app.dashmediaco.com",
+  "portalBaseUrl": "https://login.dashmediaco.com",
   "status": "active",
   "setAsDefault": false
 }
