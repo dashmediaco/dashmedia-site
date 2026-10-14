@@ -9,5 +9,18 @@
       "source": "/client-login",
       "destination": "/api/client-login"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.dashmediaco.com"
+        }
+      ],
+      "destination": "https://dashmediaco.com/:path*",
+      "permanent": true
+    }
   ]
 }
