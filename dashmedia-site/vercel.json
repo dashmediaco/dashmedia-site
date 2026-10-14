@@ -3,5 +3,11 @@
     "api/contact.js": {
       "maxDuration": 10
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/client-login",
+      "destination": "/api/client-login"
+    }
+  ]
 }

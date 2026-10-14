@@ -1,8 +1,8 @@
 # Dash Media — Landing Page
 
 A single-page marketing site for **Dash Media** (`dashmediaco.com`). One static
-`index.html` (all CSS and JS are inline — no build step) plus a logo asset and a
-serverless function for the contact/quote form.
+`index.html` (all CSS and JS are inline — no build step) plus a logo asset and
+serverless functions for the contact form and client portal routing.
 
 ## Files
 
@@ -11,6 +11,9 @@ serverless function for the contact/quote form.
 | `index.html` | The entire page — hero, all sections, and the contact form. |
 | `logo.png` | The DASH logo (512×512, transparent background). |
 | `api/contact.js` | `POST /api/contact` handler — relays form submissions to GoHighLevel. |
+| `api/client-login.js` | `GET /client-login` — sends all users to the shared HighLevel sign-in. |
+| `api/client-portal-admin.js` | Protected `POST /api/client-portal-admin` — creates or updates client routing records. |
+| `lib/client-portal-store.js` | Server-side Redis data access and portal URL validation. |
 | `vercel.json` | Vercel project config. |
 | `package.json` | Node metadata for the serverless function. |
 
@@ -50,6 +53,49 @@ The form in the **Contact** section submits JSON to `/api/contact`:
 
 Each successful submission becomes a **new Contact in GoHighLevel** and flows into
 the existing "Lead Intake" automation.
+
+## Client login
+
+All **Client Login** links point to the same `/client-login` route. Redis stores
+the portal registry and shared login domain. The route redirects to the root of
+that domain and never appends a location ID, so it does not force the Demo
+subaccount.
+
+After signing in, HighLevel shows the locations that user is authorized to
+access and provides its account switcher. HighLevel remains responsible for
+passwords, authentication, and subaccount permissions; Dash does not store
+HighLevel passwords.
+
+The Redis registry currently includes the `demo` record for **Dash Mortgage
+Automation Demo**. It stores each client's ID, display name, HighLevel location
+ID, login-domain base URL, status, and update time. The default record controls
+the shared login domain only; it does not select the company shown after sign-in.
+Until a branded login domain is configured in HighLevel, the current host is
+`app.gohighlevel.com`.
+
+### Add or update a client record
+
+Set a strong `CLIENT_PORTAL_ADMIN_TOKEN` in Vercel for Preview and Production.
+Then send a server-side request to `POST /api/client-portal-admin` with that
+token in the `Authorization: Bearer ...` header:
+
+```json
+{
+  "id": "new-client",
+  "name": "Client Agency",
+  "locationId": "GHL_LOCATION_ID",
+  "portalBaseUrl": "https://app.gohighlevel.com",
+  "status": "active",
+  "setAsDefault": false
+}
+```
+
+Set `setAsDefault` to `true` only when intentionally changing the shared
+login domain; it does not choose a client's subaccount after login. Use the same
+shared login domain for client records. To use a white-label login domain later,
+set the default record's `portalBaseUrl` to your shared HTTPS app domain. Only
+the server can read or write Redis credentials; no database token is sent to the
+browser.
 
 ## Notes
 
