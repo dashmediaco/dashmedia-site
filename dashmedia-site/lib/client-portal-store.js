@@ -88,9 +88,9 @@ function normalizePortalBaseUrl(value) {
   return parsed.origin;
 }
 
-function getPortalUrl(client) {
-  var base = normalizePortalBaseUrl(client.portalBaseUrl);
-  return new URL('/v2/location/' + encodeURIComponent(client.locationId) + '/dashboard', base).toString();
+function getUniversalLoginUrl(portal) {
+  var base = normalizePortalBaseUrl(portal.portalBaseUrl);
+  return new URL('/', base).toString();
 }
 
 async function getClient(clientId) {
@@ -149,7 +149,7 @@ module.exports = {
   DEFAULT_PORTAL_BASE_URL: DEFAULT_PORTAL_BASE_URL,
   getClient: getClient,
   getDefaultClientId: getDefaultClientId,
-  getPortalUrl: getPortalUrl,
+  getUniversalLoginUrl: getUniversalLoginUrl,
   isValidClientId: isValidClientId,
   normalizePortalBaseUrl: normalizePortalBaseUrl,
   saveClient: saveClient
