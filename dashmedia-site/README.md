@@ -9,13 +9,17 @@ serverless functions for the contact form and client portal routing.
 | File | Purpose |
 | --- | --- |
 | `index.html` | The entire page — hero, all sections, and the contact form. |
-| `logo.png` | The DASH logo (512×512, transparent background). |
+| `logo.png` | The DASH logo (high-resolution transparent 3D render). |
 | `api/contact.js` | `POST /api/contact` handler — relays form submissions to GoHighLevel. |
 | `api/client-login.js` | `GET /client-login` — redirects all users to the Dash-branded sign-in. |
 | `api/client-portal-admin.js` | Protected `POST /api/client-portal-admin` — creates or updates client routing records. |
 | `lib/client-portal-store.js` | Server-side Redis data access and portal URL validation. |
 | `vercel.json` | Vercel project config. |
 | `package.json` | Node metadata for the serverless function. |
+| `assets/` | The 16:9 borrower journey trailer and its poster frame. |
+| `robots.txt` and `sitemap.xml` | Search crawler access and the canonical homepage URL. |
+
+The homepage canonical URL is `https://dashmediaco.com/`; `www.dashmediaco.com` permanently redirects there.
 
 ## Deploy (Vercel)
 

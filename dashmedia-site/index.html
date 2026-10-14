@@ -3,8 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dash Media | Exclusive Mortgage Leads</title>
-<meta name="description" content="Dash Media delivers exclusive, OTP-verified mortgage leads straight to your CRM. No pay-per-lead upsells, no long-term contracts. Just a done-for-you lead system built for mortgage professionals.">
+<title>Dash Media | Mortgage Lead Generation for Lenders</title>
+<meta name="description" content="Dash Media builds and manages mortgage lead generation systems for lenders, combining paid ads, borrower funnels, phone verification, automated follow-up, and CRM delivery.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://dashmediaco.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dash Media">
+<meta property="og:title" content="Dash Media | Mortgage Lead Generation for Lenders">
+<meta property="og:description" content="A done-for-you mortgage lead generation system: ads, borrower funnels, phone verification, automated follow-up, and CRM delivery.">
+<meta property="og:url" content="https://dashmediaco.com/">
+<meta property="og:image" content="https://dashmediaco.com/logo.png">
+<meta property="og:image:alt" content="Dash Media 3D navy medallion logo">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dash Media | Mortgage Lead Generation for Lenders">
+<meta name="twitter:description" content="A done-for-you mortgage lead generation system for lenders.">
+<meta name="twitter:image" content="https://dashmediaco.com/logo.png">
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -88,7 +101,7 @@ body{
   text-decoration:none;white-space:nowrap;
 }
 .logo-mark{width:calc(34 * var(--u));height:calc(34 * var(--u));border-radius:50%;
-  display:block;flex:0 0 auto;background:#0A2342}
+  display:block;flex:0 0 auto;background:#0A2342;filter:drop-shadow(0 3px 5px rgba(0,0,0,.42))}
 .logo-text{font-weight:800;font-size:calc(23 * var(--u));letter-spacing:calc(0.45 * var(--u));color:var(--ink)}
 
 .nav-links{
@@ -147,18 +160,8 @@ body{
 }
 .hero-logo-wrap{position:relative;width:calc(150 * var(--u));height:calc(150 * var(--u));margin:0 auto calc(32 * var(--u))}
 .hero-logo{width:100%;height:100%;border-radius:50%;display:block;position:relative;z-index:2;
-  background:#0A2342;box-shadow:0 0 0 1px rgba(255,255,255,.14), 0 20px 48px rgba(0,0,0,.65)}
-.hero-logo-glow{position:absolute;inset:calc(-24 * var(--u));border-radius:50%;z-index:1;pointer-events:none;
-  background:radial-gradient(circle, rgba(37,99,235,.34) 0%, rgba(59,130,246,.15) 46%, rgba(37,99,235,0) 72%);
-  filter:blur(calc(7 * var(--u)));animation:glowPulse 3.6s ease-in-out infinite}
-.hero-logo-ring{position:absolute;inset:calc(-10 * var(--u));border-radius:50%;z-index:3;pointer-events:none;
-  background:conic-gradient(from 0deg, transparent 0deg, rgba(59,130,246,0) 18deg, rgba(59,130,246,.95) 72deg,
-    rgba(165,205,255,.95) 98deg, rgba(59,130,246,0) 138deg, transparent 360deg);
-  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
-  mask:radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
-  animation:spin 2.8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes glowPulse{0%,100%{opacity:.5;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+  background:#0A2342;filter:drop-shadow(0 12px 24px rgba(0,0,0,.38));animation:logoFloat 6s ease-in-out infinite}
+@keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 
 .ln{display:block}
 .ln-i{display:block}
@@ -412,6 +415,15 @@ html.anim.go .hero-stats{animation:liftIn .6s var(--e-soft) 1.02s both}
 .funnel-stage .conv{font-size:13px;color:var(--ink-muted);opacity:.7;min-width:120px;text-align:right}
 .funnel-note{font-size:13px;color:var(--ink-muted);opacity:.6;margin-top:18px}
 
+.trailer{max-width:940px;margin:64px auto 0}
+.trailer-copy{max-width:720px;margin:0 0 24px}
+.trailer-copy .sec-title{margin-bottom:12px}
+.trailer-frame{aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:22px;
+  background:#09090c;box-shadow:0 28px 80px rgba(0,0,0,.42)}
+.trailer-frame video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
+.trailer-note{font-size:12px;color:var(--ink-muted);opacity:.58;line-height:1.5;margin:12px 0 0}
+@media (max-width:640px){.trailer{margin-top:42px}.trailer-frame{border-radius:15px}}
+
 /* comparison table */
 .table-scroll{overflow-x:auto;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:#0b0b0e}
 table.compare{width:100%;border-collapse:collapse;min-width:720px;font-size:15px}
@@ -589,8 +601,6 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
     <div class="hero-inner">
       <div class="hero-logo-wrap">
         <img class="hero-logo" src="logo.png" alt="Dash Media" width="150" height="150">
-        <span class="hero-logo-glow" aria-hidden="true"></span>
-        <span class="hero-logo-ring" aria-hidden="true"></span>
       </div>
       <h1>
         <span class="ln"><span class="ln-i">Turn Clicks Into</span></span>
@@ -708,6 +718,20 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
         </div>
       </div>
       <p class="funnel-note reveal">*Illustrative figures for a typical mid-volume account. Individual results vary.</p>
+      <div class="trailer reveal" aria-labelledby="trailer-title">
+        <div class="trailer-copy">
+          <span class="sec-eyebrow">Borrower Journey</span>
+          <h3 class="sec-title" id="trailer-title">See the borrower journey in action.</h3>
+          <p class="sec-lede">From the first ad click to verified lead delivery, see how Dash connects the steps for a lender.</p>
+        </div>
+        <div class="trailer-frame">
+          <video controls playsinline preload="none" poster="assets/dash-borrower-journey-trailer-poster.jpg" aria-label="Dash Media borrower journey trailer">
+            <source src="assets/dash-media-borrower-journey-trailer-16x9.mp4" type="video/mp4">
+            Your browser does not support embedded video.
+          </video>
+        </div>
+        <p class="trailer-note">Illustrative borrower journey. Qualification steps and campaign results vary by lender and market.</p>
+      </div>
     </div>
   </section>
 
