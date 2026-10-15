@@ -41,6 +41,37 @@ module.exports = async function handler(req, res) {
     return sendError(res, 400, 'Invalid client portal record');
   }
 
+  if (body.action === 'assign-user') {
+    var email = typeof body.email === 'string' ? body.email : '';
+    var clientIds = body.clientIds;
+    try {
+      email = portalStore.normalizeEmail(email);
+    } catch (err) {
+      return sendError(res, 400, 'Client email is invalid');
+    }
+    if (!Array.isArray(clientIds) || clientIds.length > 100 ||
+        clientIds.some(function (clientId) { return !portalStore.isValidClientId(clientId); })) {
+      return sendError(res, 400, 'Client assignments are invalid');
+    }
+    try {
+      var assignment = await portalStore.assignUser(email, clientIds);
+      return res.status(200).json({
+        saved: true,
+        email: assignment.email,
+        agencies: assignment.clientIds.length
+      });
+    } catch (err) {
+      if (err && err.message === 'One or more agencies are unavailable') {
+        return sendError(res, 400, err.message);
+      }
+      console.error('Client user assignment failed:', err && err.message ? err.message : 'unknown error');
+      return sendError(res, 500, 'Client assignments could not be saved');
+    }
+  }
+  if (body.action && body.action !== 'save-client') {
+    return sendError(res, 400, 'Unsupported client portal action');
+  }
+
   var id = typeof body.id === 'string' ? body.id.trim().toLowerCase() : '';
   var name = typeof body.name === 'string' ? body.name.trim() : '';
   var locationId = typeof body.locationId === 'string' ? body.locationId.trim() : '';
