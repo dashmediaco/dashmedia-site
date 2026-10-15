@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/client-login",
-      "destination": "/api/client-login"
+      "destination": "/client-login.html"
     }
   ],
   "redirects": [
