@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;800&display=block" rel="stylesheet">
 <style>
 /* ============================================================
-   DESIGN SYSTEM — the reference-pixel unit (hero)
+   DESIGN SYSTEM â€” the reference-pixel unit (hero)
    ============================================================ */
 :root{
   --u: min(calc(100vw / 1280), calc(100dvh / 760));
@@ -74,24 +74,18 @@ body{
   width:max(100vw, calc(100dvh * 1.6));
   height:max(62.5vw, 100dvh);
   background-color:#000;
+  background-image:
+    linear-gradient(180deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.18) 46%,rgba(0,0,0,.78) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.3),transparent 38%,transparent 72%,rgba(0,0,0,.24)),
+    url("https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp");
+  background-size:cover,cover,cover;
+  background-position:center,center,51% 8%;
+  background-repeat:no-repeat;
+  filter:hue-rotate(-32deg) saturate(1.05);
 }
 @supports not (height: 100dvh){
   .bg{width:max(100vw, calc(100vh * 1.6));height:max(62.5vw, 100vh)}
 }
-.bg-video{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:51% 8%;
-  display:block;
-  background-color:#000;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity .9s linear;
-  filter:hue-rotate(-32deg) saturate(1.05);
-}
-.bg-video.is-active{opacity:1}
-
 .nav{position:absolute;top:0;left:0;right:0;height:calc(67 * var(--u));
      display:flex;align-items:center;
      padding-left:calc(24.5 * var(--u));padding-right:calc(50.7 * var(--u));z-index:3}
@@ -287,7 +281,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 }
 
 /* ============================================================
-   ENTRANCE SEQUENCE — runs once on first load, then detaches
+   ENTRANCE SEQUENCE â€” runs once on first load, then detaches
    ============================================================ */
 html.anim .ln{overflow:hidden;padding-top:.26em;margin-top:-.26em}
 html.anim .ln-i{transform:translateY(100%)}
@@ -387,7 +381,7 @@ html.anim.go .hero-stats{animation:liftIn .6s var(--e-soft) 1.02s both}
 .marquee-track{display:flex;width:max-content;gap:12px;animation:scrollX 36s linear infinite}
 .marquee-chip{display:inline-flex;align-items:center;gap:9px;white-space:nowrap;font-size:15px;font-weight:500;
   color:var(--ink-muted);padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03)}
-.marquee-chip::before{content:"◆";font-size:8px;color:var(--accent)}
+.marquee-chip::before{content:"â—†";font-size:8px;color:var(--accent)}
 @keyframes scrollX{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* results band */
@@ -416,15 +410,6 @@ html.anim.go .hero-stats{animation:liftIn .6s var(--e-soft) 1.02s both}
 .funnel-stage .conv{font-size:13px;color:var(--ink-muted);opacity:.7;min-width:120px;text-align:right}
 .funnel-note{font-size:13px;color:var(--ink-muted);opacity:.6;margin-top:18px}
 
-.trailer{max-width:940px;margin:64px auto 0}
-.trailer-copy{max-width:720px;margin:0 0 24px}
-.trailer-copy .sec-title{margin-bottom:12px}
-.trailer-frame{aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:22px;
-  background:#09090c;box-shadow:0 28px 80px rgba(0,0,0,.42)}
-.trailer-frame video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
-.trailer-note{font-size:12px;color:var(--ink-muted);opacity:.58;line-height:1.5;margin:12px 0 0}
-@media (max-width:640px){.trailer{margin-top:42px}.trailer-frame{border-radius:15px}}
-
 /* comparison table */
 .table-scroll{overflow-x:auto;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:#0b0b0e}
 table.compare{width:100%;border-collapse:collapse;min-width:720px;font-size:15px}
@@ -447,7 +432,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
 .plan-card>p{font-size:16px;color:var(--ink-muted);opacity:.85;font-weight:300;margin:0 0 24px;line-height:1.6}
 .plan-feats{display:flex;flex-direction:column;gap:13px;margin:0 0 30px;padding:0;list-style:none}
 .plan-feats li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;color:#e9e9e9}
-.plan-feats li::before{content:"✓";flex:0 0 auto;width:22px;height:22px;border-radius:7px;
+.plan-feats li::before{content:"âœ“";flex:0 0 auto;width:22px;height:22px;border-radius:7px;
   background:rgba(29,78,216,.16);color:var(--accent);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .callouts{display:flex;flex-direction:column;gap:16px}
 .callout{display:flex;gap:16px;align-items:flex-start;border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:22px;background:#0b0b0e}
@@ -470,7 +455,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
 .contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:50px;align-items:start}
 .trust{display:flex;flex-direction:column;gap:12px;margin:28px 0 0;padding:0;list-style:none}
 .trust li{display:flex;align-items:center;gap:11px;font-size:15px;color:#e9e9e9}
-.trust li::before{content:"✓";flex:0 0 auto;width:20px;height:20px;border-radius:6px;background:rgba(29,78,216,.16);
+.trust li::before{content:"âœ“";flex:0 0 auto;width:20px;height:20px;border-radius:6px;background:rgba(29,78,216,.16);
   color:var(--accent);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
 .form-card{border:1px solid rgba(255,255,255,.09);border-radius:20px;background:#0b0b0e;padding:34px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -525,7 +510,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
 }
 </style>
 <script>
-/* ENTRANCE — arm synchronously to avoid a flash of unanimated content. */
+/* ENTRANCE â€” arm synchronously to avoid a flash of unanimated content. */
 (function(){
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   document.documentElement.classList.add('anim');
@@ -560,13 +545,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
 <main>
   <!-- HERO -->
   <section class="hero" id="top">
-    <div class="bg" role="img" aria-label="Stylised globe of Earth rendered as a purple dot matrix against a starfield, slowly rotating">
-      <video class="bg-video is-active" id="bgVideoA" autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp">
-        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
-      </video>
-      <video class="bg-video" id="bgVideoB" muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp">
-        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
-      </video>
+    <div class="bg" role="img" aria-label="A purple-blue globe of Earth rendered as a dot matrix against a starfield">
     </div>
 
     <header class="nav">
@@ -614,7 +593,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
       </div>
       <div class="hero-stats">
         <div class="stat"><b>100K+</b><span>Leads Generated</span></div>
-        <div class="stat"><b>10–15%</b><span>Avg. Conversion</span></div>
+        <div class="stat"><b>10â€“15%</b><span>Avg. Conversion</span></div>
         <div class="stat"><b>Instant</b><span>Real-Time Delivery</span></div>
       </div>
     </div>
@@ -672,7 +651,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
       <div class="results-grid">
         <div class="stat reveal"><b>100K+</b><span>Leads Generated</span></div>
         <div class="stat reveal"><b>9K+</b><span>Calls Booked</span></div>
-        <div class="stat reveal"><b>10–15%</b><span>Avg Conversion Rate</span></div>
+        <div class="stat reveal"><b>10â€“15%</b><span>Avg Conversion Rate</span></div>
         <div class="stat reveal"><b>20+</b><span>Hours Saved Per Week</span></div>
       </div>
       <p class="results-note">*Illustrative benchmarks based on typical client outcomes. Results vary and are not guaranteed.</p>
@@ -719,20 +698,6 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
         </div>
       </div>
       <p class="funnel-note reveal">*Illustrative figures for a typical mid-volume account. Individual results vary.</p>
-      <div class="trailer reveal" aria-labelledby="trailer-title">
-        <div class="trailer-copy">
-          <span class="sec-eyebrow">Borrower Journey</span>
-          <h3 class="sec-title" id="trailer-title">See the borrower journey in action.</h3>
-          <p class="sec-lede">From the first ad click to verified lead delivery, see how Dash connects the steps for a lender.</p>
-        </div>
-        <div class="trailer-frame">
-          <video controls playsinline preload="none" poster="assets/dash-borrower-journey-trailer-poster.jpg" aria-label="Dash Media borrower journey trailer">
-            <source src="assets/dash-media-borrower-journey-trailer-16x9.mp4" type="video/mp4">
-            Your browser does not support embedded video.
-          </video>
-        </div>
-        <p class="trailer-note">Illustrative borrower journey. Qualification steps and campaign results vary by lender and market.</p>
-      </div>
     </div>
   </section>
 
@@ -750,13 +715,13 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
             <tr><th>Feature</th><th class="hl">Dash Media</th><th>In-House Hire</th><th>Other Lead Vendors</th></tr>
           </thead>
           <tbody>
-            <tr><td>Time to Launch</td><td class="hl">3–5 Days</td><td>4–6 Weeks</td><td>7–14 Days</td></tr>
-            <tr><td>Customized Solution</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="partial">Partial</span></td></tr>
-            <tr><td>Exclusive Leads</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
-            <tr><td>OTP Verified Leads</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
-            <tr><td>No Hidden Fees</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="partial">Partial</span></td></tr>
+            <tr><td>Time to Launch</td><td class="hl">3â€“5 Days</td><td>4â€“6 Weeks</td><td>7â€“14 Days</td></tr>
+            <tr><td>Customized Solution</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="partial">Partial</span></td></tr>
+            <tr><td>Exclusive Leads</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="cross">âœ•</span></td></tr>
+            <tr><td>OTP Verified Leads</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="cross">âœ•</span></td></tr>
+            <tr><td>No Hidden Fees</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="partial">Partial</span></td></tr>
             <tr><td>Pricing</td><td class="hl">Flat, transparent packages</td><td>High salary + benefits</td><td>Hidden fees + setup costs</td></tr>
-            <tr><td>CRM Integration</td><td class="hl"><span class="tick">✓</span></td><td><span class="cross">✕</span></td><td><span class="partial">Partial</span></td></tr>
+            <tr><td>CRM Integration</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="partial">Partial</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -789,7 +754,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
         <div class="callouts">
           <div class="callout reveal"><span class="dot"></span><div><h4>Built for your capacity</h4><p>Volume scales with what your team can actually convert, never more, never less.</p></div></div>
           <div class="callout reveal"><span class="dot"></span><div><h4>No long-term lock-in</h4><p>No multi-year contracts and no hidden fees buried in the fine print.</p></div></div>
-          <div class="callout reveal"><span class="dot"></span><div><h4>Live in 3–5 days</h4><p>Fast onboarding so you're collecting verified leads inside a week, not a quarter.</p></div></div>
+          <div class="callout reveal"><span class="dot"></span><div><h4>Live in 3â€“5 days</h4><p>Fast onboarding so you're collecting verified leads inside a week, not a quarter.</p></div></div>
         </div>
       </div>
     </div>
@@ -805,7 +770,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
       <div class="faq-list">
         <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How much does it cost?<span class="plus">+</span></button><div class="faq-a"><p>Pricing depends on your target market, monthly volume and how much of the system you want built out. Fill in the form below and we'll reach out within 24 hours to schedule your consultation call with our sales team.</p></div></div>
         <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How are leads delivered to me?<span class="plus">+</span></button><div class="faq-a"><p>Verified leads are pushed in real time straight into your CRM or inbox the moment a prospect completes OTP verification. No manual exports.</p></div></div>
-        <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How long does it take to get started?<span class="plus">+</span></button><div class="faq-a"><p>Most systems are built, tested and launched within 3–5 business days of kickoff.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How long does it take to get started?<span class="plus">+</span></button><div class="faq-a"><p>Most systems are built, tested and launched within 3â€“5 business days of kickoff.</p></div></div>
         <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">Can I filter leads by specific criteria?<span class="plus">+</span></button><div class="faq-a"><p>Yes. We configure filters around your ideal borrower profile (loan type, location, credit tier and more) before your funnel goes live.</p></div></div>
         <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">What if a lead doesn't meet my criteria?<span class="plus">+</span></button><div class="faq-a"><p>We continuously monitor lead quality and adjust targeting and filters together with you to keep match rates high.</p></div></div>
       </div>
@@ -841,10 +806,10 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
               <label for="volume">Monthly Lead Volume<span class="req">*</span></label>
               <select id="volume" name="volume" required>
                 <option value="" disabled selected>Select volume</option>
-                <option value="10–25">10–25 leads/month</option>
-                <option value="26–50">26–50 leads/month</option>
-                <option value="51–100">51–100 leads/month</option>
-                <option value="101–250">101–250 leads/month</option>
+                <option value="10â€“25">10â€“25 leads/month</option>
+                <option value="26â€“50">26â€“50 leads/month</option>
+                <option value="51â€“100">51â€“100 leads/month</option>
+                <option value="101â€“250">101â€“250 leads/month</option>
                 <option value="250+">250+ leads/month</option>
               </select>
             </div>
@@ -875,7 +840,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
           <a href="/client-login">Client Login</a>
         </nav>
       </div>
-      <div class="footer-bottom">© 2026 Dash Media. All rights reserved.</div>
+      <div class="footer-bottom">Â© 2026 Dash Media. All rights reserved.</div>
     </div>
   </footer>
 </main>
@@ -938,30 +903,6 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
 })();
 </script>
 
-<script>
-/* BACKGROUND VIDEO — cross-fade the two copies at the 10s loop point. */
-(function(){
-  var A=document.getElementById('bgVideoA'), B=document.getElementById('bgVideoB');
-  if(!A||!B) return;
-  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    A.removeAttribute('autoplay'); A.pause(); B.pause();
-    try{A.currentTime=0;}catch(e){} return;
-  }
-  var FADE=.9, cur=A, nxt=B, swapping=false;
-  function play(v){var p=v.play(); if(p&&typeof p.then==='function')p.then(null,function(){});}
-  play(A);
-  function tick(){
-    if(swapping||!cur.duration) return;
-    if(cur.duration-cur.currentTime>FADE) return;
-    swapping=true; var out=cur;
-    nxt.currentTime=0; play(nxt);
-    nxt.classList.add('is-active'); out.classList.remove('is-active');
-    var t=cur; cur=nxt; nxt=t;
-    setTimeout(function(){ out.pause(); try{out.currentTime=0;}catch(e){} swapping=false; }, FADE*1000+100);
-  }
-  A.addEventListener('timeupdate',tick);
-  B.addEventListener('timeupdate',tick);
-})();
-</script>
+
 </body>
 </html>
