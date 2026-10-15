@@ -1,106 +1,52 @@
-# Dash Media - Landing Page
+# Dash Media Website
 
-A single-page marketing site for **Dash Media** (`dashmediaco.com`). One static
-`index.html` (all CSS and JS are inline - no build step) plus a logo asset and
-serverless functions for the contact form, client sign-in redirect, and protected portal administration.
+The Dash Media marketing website is a static page with Vercel serverless functions for the contact form and client portal.
 
-## Files
+## Client portal flow
 
-| File | Purpose |
-| --- | --- |
-| `index.html` | The entire page - hero, all sections, and the contact form. |
-| `client-login.html` | Private fallback page that immediately forwards visitors to HighLevel sign-in. |
-| `logo.png` | The DASH logo (high-resolution transparent 3D render). |
-| `api/contact.js` | `POST /api/contact` handler - relays form submissions to GoHighLevel. |
+1. A visitor selects Client Login and sees the Dash-branded sign-in page.
+2. Google verifies the user's email. Dash creates a signed, HTTP-only session and opens the agency page.
+3. The private agency API looks up that normalized email in Redis and returns only active agencies assigned to that user. The page is always shown after sign-in, even when the user has one agency. There is no public Demo listing.
+4. Selecting an agency calls a server route that checks the same assignment again, then opens the selected HighLevel location on the white-label domain.
 
-| `api/client-login.js` | `GET /api/client-login` - redirects visitors to Dash's HighLevel sign-in domain. |
-| `api/client-portal-admin.js` | Protected `POST /api/client-portal-admin` - creates or updates client routing records. |
-| `lib/client-portal-store.js` | Server-side Redis data access and portal URL validation. |
-| `vercel.json` | Vercel project config. |
-| `package.json` | Node metadata for the serverless function. |
-| `assets/` | Static brand and illustration assets. |
-| `robots.txt` and `sitemap.xml` | Search crawler access and the canonical homepage URL. |
+Dash does not collect or store HighLevel passwords. HighLevel user and location permissions remain the final access control. Google sign-in to Dash does not automatically sign a user into HighLevel; configure HighLevel OIDC SSO separately if the second sign-in prompt should be removed.
 
-The homepage canonical URL is `https://dashmediaco.com/`; `www.dashmediaco.com` permanently redirects there.
+## Vercel configuration
 
-## Deploy (Vercel)
+Keep these values server-side in Vercel Preview and Production:
 
-1. Create a new Vercel project and import this folder (or push it to a repo and
-   connect the repo).
-2. In **Vercel Settings > Environment Variables**, add:
-   - **Name:** `GHL_WEBHOOK_URL`
-   - **Value:** the GoHighLevel Inbound Webhook URL (provided by the client).
-3. **Redeploy.** Vercel only picks up environment-variable changes on the next
-   deploy.
+- GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET: Google OAuth web client credentials.
+- PORTAL_SESSION_SECRET: at least 32 random bytes for signed sessions and OAuth state.
+- CLIENT_PORTAL_ADMIN_TOKEN: a strong bearer token for the protected assignment API.
+- GOOGLE_OAUTH_REDIRECT_URI: optional; defaults to https://dashmediaco.com/api/google-callback.
+- Redis/KV REST URL and token: the existing Upstash or Vercel KV connection used for agency and user records.
 
-> The site is also compatible with Netlify (functions) or any Node 18+ host.
+Register the exact callback URL, https://dashmediaco.com/api/google-callback, in the Google OAuth client. The sign-in requests openid, email, and profile, and requires a verified email. Redeploy after changing Vercel environment variables.
 
-## Contact form -> GoHighLevel
+## Agency records and user assignments
 
-The form in the **Contact** section submits JSON to `/api/contact`:
+The protected POST endpoint is /api/client-portal-admin. Send the admin token as Authorization: Bearer TOKEN. First save an agency record with its HighLevel location ID. Then assign only the intended verified email addresses to that agency.
 
-```json
-{ "fullName": "...", "email": "...", "phone": "...", "company": "...", "volume": "..." }
-```
+Example agency record fields:
 
-`api/contact.js` validates the required fields, then `POST`s to `GHL_WEBHOOK_URL`:
+    {
+      "id": "demo",
+      "name": "Dash Mortgage Automation Demo",
+      "locationId": "GHL_LOCATION_ID",
+      "portalBaseUrl": "https://login.dashmediaco.com",
+      "status": "active"
+    }
 
-```json
-{
-  "fullName": "...",
-  "email": "...",
-  "phone": "...",
-  "company": "...",
-  "volume": "...",
-  "source": "dashmediaco.com contact form",
-  "submittedAt": "<ISO timestamp>"
-}
-```
+Example user assignment:
 
-Each successful submission becomes a **new Contact in GoHighLevel** and flows into
-the existing "Lead Intake" automation.
+    {
+      "action": "assign-user",
+      "email": "client@example.com",
+      "clientIds": ["demo"]
+    }
 
-## Client login
+An email can be assigned to multiple agencies by listing their IDs in clientIds. Use an empty array to remove all Dash agency assignments for that email. Disabled or unknown agencies cannot be assigned. The Demo is not assigned to anyone by default; add only the intended user emails through the protected API after the necessary credentials are configured.
 
-All **Client Login** links open `/client-login`, which immediately redirects to
-Dash's white-label HighLevel sign-in at `https://login.dashmediaco.com`. The
-route does not show agency names, expose the Demo workspace, or include a
-HighLevel location ID before sign-in.
+## Main site
 
-HighLevel handles authentication and account access. After sign-in, its own
-account switcher and user permissions control which subaccounts are available.
-Create client users as account-level users and assign only the locations they
-should access. Agency-level users can access all locations, so do not use an
-agency-level login for clients. Dash never collects or stores HighLevel
-passwords. The Redis portal registry is administrative metadata and does not
-authenticate users or decide their permissions.
-
-### Add or update a client record
-
-Set a strong `CLIENT_PORTAL_ADMIN_TOKEN` in Vercel for Preview and Production.
-Then send a server-side request to `POST /api/client-portal-admin` with that
-token in the `Authorization: Bearer ...` header:
-
-```json
-{
-  "id": "new-client",
-  "name": "Client Agency",
-  "locationId": "GHL_LOCATION_ID",
-  "portalBaseUrl": "https://login.dashmediaco.com",
-  "status": "active",
-  "setAsDefault": false
-}
-```
-
-The registry is used only by the protected administrative endpoint. It is not
-used to choose a public destination or authenticate a client. Keep
-`CLIENT_PORTAL_ADMIN_TOKEN` server-side; no database token is sent to the
-browser.
-
-## Notes
-
-- The form shows a success message on `200` and an inline error + re-enabled button
-  on failure.
-- The GHL webhook URL never appears in the page source or the browser network tab -
-  it only exists in the server environment variable.
-- To test locally with the function: run `vercel dev` inside this folder.
+The homepage is https://dashmediaco.com/. The www hostname redirects to the canonical domain. The contact form posts to /api/contact and uses GHL_WEBHOOK_URL, which must remain a server-side environment variable.
