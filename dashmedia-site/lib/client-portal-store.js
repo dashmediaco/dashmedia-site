@@ -121,6 +121,22 @@ async function getDefaultClientId() {
   return isValidClientId(clientId) ? clientId : DEFAULT_CLIENT_ID;
 }
 
+async function listActiveClients() {
+  // Ensure a fresh Redis setup still has the demo portal and default registry entry.
+  var defaultId = await getDefaultClientId();
+  var ids = await redisCommand(['SMEMBERS', 'dash:client-portals:ids'], false);
+  if (!Array.isArray(ids)) throw new Error('Client portal registry is invalid');
+
+  ids.push(defaultId, DEFAULT_CLIENT_ID);
+  var uniqueIds = Array.from(new Set(ids.filter(isValidClientId)));
+  var clients = await Promise.all(uniqueIds.map(getClient));
+
+  return clients
+    .filter(function (client) { return client && client.status === 'active'; })
+    .sort(function (a, b) { return a.name.localeCompare(b.name); })
+    .map(function (client) { return { id: client.id, name: client.name }; });
+}
+
 async function saveClient(client, setAsDefault) {
   var commands = [
     ['SET', clientKey(client.id), JSON.stringify(client)],
@@ -152,6 +168,7 @@ module.exports = {
   getDefaultClientId: getDefaultClientId,
   getUniversalLoginUrl: getUniversalLoginUrl,
   isValidClientId: isValidClientId,
+  listActiveClients: listActiveClients,
   normalizePortalBaseUrl: normalizePortalBaseUrl,
   saveClient: saveClient
 };

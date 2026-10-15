@@ -9,9 +9,11 @@ serverless functions for the contact form and client portal routing.
 | File | Purpose |
 | --- | --- |
 | `index.html` | The entire page — hero, all sections, and the contact form. |
+| `client-login.html` | Dash-branded agency chooser shown before sign-in, including for a single workspace. |
 | `logo.png` | The DASH logo (high-resolution transparent 3D render). |
 | `api/contact.js` | `POST /api/contact` handler — relays form submissions to GoHighLevel. |
-| `api/client-login.js` | `GET /client-login` — redirects all users to the Dash-branded sign-in. |
+| `api/client-portals.js` | `GET /api/client-portals` — returns active workspace names for the chooser. |
+| `api/client-login.js` | `GET /api/client-login?client=<id>` — redirects a selected workspace to its configured sign-in domain. |
 | `api/client-portal-admin.js` | Protected `POST /api/client-portal-admin` — creates or updates client routing records. |
 | `lib/client-portal-store.js` | Server-side Redis data access and portal URL validation. |
 | `vercel.json` | Vercel project config. |
@@ -60,22 +62,22 @@ the existing "Lead Intake" automation.
 
 ## Client login
 
-All **Client Login** links point to the same `/client-login` route. Redis stores
-the portal registry and shared login domain. The shared sign-in host is login.dashmediaco.com. The route redirects to the root of
-that domain and never appends a location ID, so it does not force the Demo
-subaccount.
+All **Client Login** links point to `/client-login`, a Dash-branded agency
+chooser. It always appears, even when the registry has only one active
+workspace. The page fetches active workspace names from Redis and provides a
+separate continue button for each one.
 
-After signing in, HighLevel shows the locations that user is authorized to
-access and provides its account switcher. HighLevel remains responsible for
-passwords, authentication, and subaccount permissions; Dash does not store
-HighLevel passwords.
+Selecting a workspace redirects to its configured sign-in domain, currently
+`login.dashmediaco.com`. The redirect never appends a location ID. HighLevel
+remains responsible for passwords, authentication, and subaccount permissions;
+Dash does not store HighLevel passwords. The chooser does not verify which
+workspaces a signed-in person may access; HighLevel enforces that after sign-in.
 
 The Redis registry currently includes the `demo` record for **Dash Mortgage
 Automation Demo**. It stores each client's ID, display name, HighLevel location
-ID, login-domain base URL, status, and update time. The default record controls
-the shared login domain only; it does not select the company shown after sign-in.
-The current Dash-branded login host is
-`login.dashmediaco.com`.
+ID, login-domain base URL, status, and update time. The public chooser response
+contains only active workspace IDs and names; it does not expose location IDs
+or domain settings. The current sign-in host is `login.dashmediaco.com`.
 
 ### Add or update a client record
 
@@ -94,12 +96,11 @@ token in the `Authorization: Bearer ...` header:
 }
 ```
 
-Set `setAsDefault` to `true` only when intentionally changing the shared
-login domain; it does not choose a client's subaccount after login. Use the same
-shared login domain for client records. The shared login domain is set in Redis;
-set the default record's `portalBaseUrl` to your shared HTTPS app domain. Only
-the server can read or write Redis credentials; no database token is sent to the
-browser.
+Set `setAsDefault` to `true` only when intentionally changing the default
+workspace for legacy direct API requests. Each chooser card uses the selected
+record's `portalBaseUrl`, so set a client-specific branded sign-in domain after
+it is configured in HighLevel. Only the server can read or write Redis
+credentials; no database token is sent to the browser.
 
 ## Notes
 
