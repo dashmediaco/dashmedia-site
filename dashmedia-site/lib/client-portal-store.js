@@ -50,6 +50,23 @@ function clientKey(clientId) {
   return 'dash:client-portals:client:' + clientId;
 }
 
+function emailDigest(emailValue) {
+  return crypto.createHash('sha256').update(normalizeEmail(emailValue)).digest('hex');
+}
+
+function passwordCredentialKey(emailValue) {
+  return 'dash:client-portals:credential:' + emailDigest(emailValue);
+}
+
+function passwordAttemptKey(emailValue) {
+  var bucket = Math.floor(Date.now() / (15 * 60 * 1000));
+  return 'dash:client-portals:login-attempts:' + emailDigest(emailValue) + ':' + bucket;
+}
+
+function isValidPortalPassword(value) {
+  return typeof value === 'string' && Buffer.byteLength(value, 'utf8') >= 12 && Buffer.byteLength(value, 'utf8') <= 1024;
+}
+
 function userKey(email) {
   var digest = crypto.createHash('sha256').update(normalizeEmail(email)).digest('hex');
   return 'dash:client-portals:user:' + digest;
@@ -113,6 +130,56 @@ async function getClientsForEmail(emailValue) {
     .sort(function (left, right) { return left.name.localeCompare(right.name); });
 }
 
+async function getPasswordCredential(emailValue) {
+  var email = normalizeEmail(emailValue);
+  var raw = await redisCommand(['GET', passwordCredentialKey(email)], false);
+  if (!raw) return null;
+  var record;
+  try {
+    record = JSON.parse(raw);
+  } catch (err) {
+    throw new Error('Client password record is invalid');
+  }
+  if (!record || record.email !== email || record.version !== 1 ||
+      typeof record.salt !== 'string' || !/^[A-Za-z0-9_-]{22}$/.test(record.salt) ||
+      typeof record.hash !== 'string' || !/^[a-f0-9]{128}$/.test(record.hash)) {
+    throw new Error('Client password record is invalid');
+  }
+  return record;
+}
+
+async function setPasswordCredential(emailValue, password) {
+  var email = normalizeEmail(emailValue);
+  if (!isValidPortalPassword(password)) throw new Error('Password must be at least 12 characters');
+  var salt = crypto.randomBytes(16).toString('base64url');
+  var derived = await new Promise(function (resolve, reject) {
+    crypto.scrypt(password, salt, 64, { N: 16384, r: 8, p: 1 }, function (err, key) {
+      if (err) return reject(err);
+      resolve(key);
+    });
+  });
+  var record = {
+    email: email,
+    salt: salt,
+    hash: derived.toString('hex'),
+    version: 1,
+    updatedAt: new Date().toISOString()
+  };
+  await redisCommand(['SET', passwordCredentialKey(email), JSON.stringify(record)], true);
+  return { email: email, updatedAt: record.updatedAt };
+}
+
+async function recordPasswordLoginAttempt(emailValue) {
+  var key = passwordAttemptKey(emailValue);
+  var count = Number(await redisCommand(['INCR', key], true));
+  await redisCommand(['EXPIRE', key, 900], true);
+  return count;
+}
+
+async function clearPasswordLoginAttempts(emailValue) {
+  await redisCommand(['DEL', passwordAttemptKey(emailValue)], true);
+}
+
 async function saveClient(client, setAsDefault) {
   var commands = [
     ['SET', clientKey(client.id), JSON.stringify(client)],
@@ -154,12 +221,17 @@ async function assignUser(emailValue, clientIdsValue) {
 
 module.exports = {
   DEFAULT_PORTAL_BASE_URL: DEFAULT_PORTAL_BASE_URL,
+  clearPasswordLoginAttempts: clearPasswordLoginAttempts,
   assignUser: assignUser,
   getClient: getClient,
   getClientsForEmail: getClientsForEmail,
+  getPasswordCredential: getPasswordCredential,
   isValidClientId: isValidClientId,
   isValidLocationId: isValidLocationId,
+  isValidPortalPassword: isValidPortalPassword,
   normalizeEmail: normalizeEmail,
   normalizePortalBaseUrl: normalizePortalBaseUrl,
-  saveClient: saveClient
+  recordPasswordLoginAttempt: recordPasswordLoginAttempt,
+  saveClient: saveClient,
+  setPasswordCredential: setPasswordCredential
 };
