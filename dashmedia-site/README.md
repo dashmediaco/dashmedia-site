@@ -1,24 +1,24 @@
-# Dash Media — Landing Page
+# Dash Media â€” Landing Page
 
 A single-page marketing site for **Dash Media** (`dashmediaco.com`). One static
-`index.html` (all CSS and JS are inline — no build step) plus a logo asset and
-serverless functions for the contact form and client portal routing.
+`index.html` (all CSS and JS are inline â€” no build step) plus a logo asset and
+serverless functions for the contact form, client sign-in redirect, and protected portal administration.
 
 ## Files
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | The entire page — hero, all sections, and the contact form. |
-| `client-login.html` | Dash-branded agency chooser shown before sign-in, including for a single workspace. |
+| `index.html` | The entire page â€” hero, all sections, and the contact form. |
+| `client-login.html` | Private fallback page that immediately forwards visitors to HighLevel sign-in. |
 | `logo.png` | The DASH logo (high-resolution transparent 3D render). |
-| `api/contact.js` | `POST /api/contact` handler — relays form submissions to GoHighLevel. |
-| `api/client-portals.js` | `GET /api/client-portals` — returns active workspace names for the chooser. |
-| `api/client-login.js` | `GET /api/client-login?client=<id>` — redirects a selected workspace to its configured sign-in domain. |
-| `api/client-portal-admin.js` | Protected `POST /api/client-portal-admin` — creates or updates client routing records. |
+| `api/contact.js` | `POST /api/contact` handler â€” relays form submissions to GoHighLevel. |
+
+| `api/client-login.js` | `GET /api/client-login` â€” redirects visitors to Dash's HighLevel sign-in domain. |
+| `api/client-portal-admin.js` | Protected `POST /api/client-portal-admin` â€” creates or updates client routing records. |
 | `lib/client-portal-store.js` | Server-side Redis data access and portal URL validation. |
 | `vercel.json` | Vercel project config. |
 | `package.json` | Node metadata for the serverless function. |
-| `assets/` | The 16:9 borrower journey trailer and its poster frame. |
+| `assets/` | Static brand and illustration assets. |
 | `robots.txt` and `sitemap.xml` | Search crawler access and the canonical homepage URL. |
 
 The homepage canonical URL is `https://dashmediaco.com/`; `www.dashmediaco.com` permanently redirects there.
@@ -27,7 +27,7 @@ The homepage canonical URL is `https://dashmediaco.com/`; `www.dashmediaco.com` 
 
 1. Create a new Vercel project and import this folder (or push it to a repo and
    connect the repo).
-2. In **Vercel → Settings → Environment Variables**, add:
+2. In **Vercel â†’ Settings â†’ Environment Variables**, add:
    - **Name:** `GHL_WEBHOOK_URL`
    - **Value:** the GoHighLevel Inbound Webhook URL (provided by the client).
 3. **Redeploy.** Vercel only picks up environment-variable changes on the next
@@ -35,7 +35,7 @@ The homepage canonical URL is `https://dashmediaco.com/`; `www.dashmediaco.com` 
 
 > The site is also compatible with Netlify (functions) or any Node 18+ host.
 
-## Contact form → GoHighLevel
+## Contact form â†’ GoHighLevel
 
 The form in the **Contact** section submits JSON to `/api/contact`:
 
@@ -62,22 +62,18 @@ the existing "Lead Intake" automation.
 
 ## Client login
 
-All **Client Login** links point to `/client-login`, a Dash-branded agency
-chooser. It always appears, even when the registry has only one active
-workspace. The page fetches active workspace names from Redis and provides a
-separate continue button for each one.
+All **Client Login** links open `/client-login`, which immediately redirects to
+Dash's white-label HighLevel sign-in at `https://login.dashmediaco.com`. The
+route does not show agency names, expose the Demo workspace, or include a
+HighLevel location ID before sign-in.
 
-Selecting a workspace redirects to its configured sign-in domain, currently
-`login.dashmediaco.com`. The redirect never appends a location ID. HighLevel
-remains responsible for passwords, authentication, and subaccount permissions;
-Dash does not store HighLevel passwords. The chooser does not verify which
-workspaces a signed-in person may access; HighLevel enforces that after sign-in.
-
-The Redis registry currently includes the `demo` record for **Dash Mortgage
-Automation Demo**. It stores each client's ID, display name, HighLevel location
-ID, login-domain base URL, status, and update time. The public chooser response
-contains only active workspace IDs and names; it does not expose location IDs
-or domain settings. The current sign-in host is `login.dashmediaco.com`.
+HighLevel handles authentication and account access. After sign-in, its own
+account switcher and user permissions control which subaccounts are available.
+Create client users as account-level users and assign only the locations they
+should access. Agency-level users can access all locations, so do not use an
+agency-level login for clients. Dash never collects or stores HighLevel
+passwords. The Redis portal registry is administrative metadata and does not
+authenticate users or decide their permissions.
 
 ### Add or update a client record
 
@@ -96,16 +92,15 @@ token in the `Authorization: Bearer ...` header:
 }
 ```
 
-Set `setAsDefault` to `true` only when intentionally changing the default
-workspace for legacy direct API requests. Each chooser card uses the selected
-record's `portalBaseUrl`, so set a client-specific branded sign-in domain after
-it is configured in HighLevel. Only the server can read or write Redis
-credentials; no database token is sent to the browser.
+The registry is used only by the protected administrative endpoint. It is not
+used to choose a public destination or authenticate a client. Keep
+`CLIENT_PORTAL_ADMIN_TOKEN` server-side; no database token is sent to the
+browser.
 
 ## Notes
 
 - The form shows a success message on `200` and an inline error + re-enabled button
   on failure.
-- The GHL webhook URL never appears in the page source or the browser network tab —
+- The GHL webhook URL never appears in the page source or the browser network tab â€”
   it only exists in the server environment variable.
 - To test locally with the function: run `vercel dev` inside this folder.
