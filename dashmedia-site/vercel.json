@@ -4,7 +4,8 @@
     "api/google-callback.js": { "maxDuration": 25 },
     "api/client-portals.js": { "maxDuration": 15 },
     "api/client-launch.js": { "maxDuration": 15 },
-    "api/password-login.js": { "maxDuration": 10 }
+    "api/password-login.js": { "maxDuration": 10 },
+    "api/ghl-user-sync.js": { "maxDuration": 15 }
   },
   "rewrites": [
     { "source": "/client-login", "destination": "/client-login.html" },
