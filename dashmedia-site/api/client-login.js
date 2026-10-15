@@ -1,5 +1,5 @@
-// GET /api/client-login - redirect to Dash's white-label HighLevel sign-in.
-var LOGIN_URL = 'https://login.dashmediaco.com/';
+// Compatibility route: always enter through Dash's authenticated portal first.
+var LOGIN_URL = '/client-login';
 
 module.exports = function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
