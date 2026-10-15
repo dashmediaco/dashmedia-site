@@ -1,4 +1,4 @@
-// GET /api/client-login â€” redirect to Dash's white-label HighLevel sign-in.
+// GET /api/client-login - redirect to Dash's white-label HighLevel sign-in.
 var LOGIN_URL = 'https://login.dashmediaco.com/';
 
 module.exports = function handler(req, res) {
