@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;800&display=block" rel="stylesheet">
 <style>
 /* ============================================================
-   DESIGN SYSTEM â€” the reference-pixel unit (hero)
+   DESIGN SYSTEM - the reference-pixel unit (hero)
    ============================================================ */
 :root{
   --u: min(calc(100vw / 1280), calc(100dvh / 760));
@@ -281,7 +281,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 }
 
 /* ============================================================
-   ENTRANCE SEQUENCE â€” runs once on first load, then detaches
+   ENTRANCE SEQUENCE - runs once on first load, then detaches
    ============================================================ */
 html.anim .ln{overflow:hidden;padding-top:.26em;margin-top:-.26em}
 html.anim .ln-i{transform:translateY(100%)}
@@ -381,7 +381,7 @@ html.anim.go .hero-stats{animation:liftIn .6s var(--e-soft) 1.02s both}
 .marquee-track{display:flex;width:max-content;gap:12px;animation:scrollX 36s linear infinite}
 .marquee-chip{display:inline-flex;align-items:center;gap:9px;white-space:nowrap;font-size:15px;font-weight:500;
   color:var(--ink-muted);padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03)}
-.marquee-chip::before{content:"â—†";font-size:8px;color:var(--accent)}
+.marquee-chip::before{content:"\25C6";font-size:8px;color:var(--accent)}
 @keyframes scrollX{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* results band */
@@ -432,7 +432,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
 .plan-card>p{font-size:16px;color:var(--ink-muted);opacity:.85;font-weight:300;margin:0 0 24px;line-height:1.6}
 .plan-feats{display:flex;flex-direction:column;gap:13px;margin:0 0 30px;padding:0;list-style:none}
 .plan-feats li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;color:#e9e9e9}
-.plan-feats li::before{content:"âœ“";flex:0 0 auto;width:22px;height:22px;border-radius:7px;
+.plan-feats li::before{content:"\2713";flex:0 0 auto;width:22px;height:22px;border-radius:7px;
   background:rgba(29,78,216,.16);color:var(--accent);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .callouts{display:flex;flex-direction:column;gap:16px}
 .callout{display:flex;gap:16px;align-items:flex-start;border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:22px;background:#0b0b0e}
@@ -455,7 +455,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
 .contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:50px;align-items:start}
 .trust{display:flex;flex-direction:column;gap:12px;margin:28px 0 0;padding:0;list-style:none}
 .trust li{display:flex;align-items:center;gap:11px;font-size:15px;color:#e9e9e9}
-.trust li::before{content:"âœ“";flex:0 0 auto;width:20px;height:20px;border-radius:6px;background:rgba(29,78,216,.16);
+.trust li::before{content:"\2713";flex:0 0 auto;width:20px;height:20px;border-radius:6px;background:rgba(29,78,216,.16);
   color:var(--accent);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
 .form-card{border:1px solid rgba(255,255,255,.09);border-radius:20px;background:#0b0b0e;padding:34px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -510,7 +510,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
 }
 </style>
 <script>
-/* ENTRANCE â€” arm synchronously to avoid a flash of unanimated content. */
+/* ENTRANCE - arm synchronously to avoid a flash of unanimated content. */
 (function(){
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   document.documentElement.classList.add('anim');
@@ -593,7 +593,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
       </div>
       <div class="hero-stats">
         <div class="stat"><b>100K+</b><span>Leads Generated</span></div>
-        <div class="stat"><b>10â€“15%</b><span>Avg. Conversion</span></div>
+        <div class="stat"><b>10-15%</b><span>Avg. Conversion</span></div>
         <div class="stat"><b>Instant</b><span>Real-Time Delivery</span></div>
       </div>
     </div>
@@ -651,7 +651,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
       <div class="results-grid">
         <div class="stat reveal"><b>100K+</b><span>Leads Generated</span></div>
         <div class="stat reveal"><b>9K+</b><span>Calls Booked</span></div>
-        <div class="stat reveal"><b>10â€“15%</b><span>Avg Conversion Rate</span></div>
+        <div class="stat reveal"><b>10-15%</b><span>Avg Conversion Rate</span></div>
         <div class="stat reveal"><b>20+</b><span>Hours Saved Per Week</span></div>
       </div>
       <p class="results-note">*Illustrative benchmarks based on typical client outcomes. Results vary and are not guaranteed.</p>
@@ -715,13 +715,13 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
             <tr><th>Feature</th><th class="hl">Dash Media</th><th>In-House Hire</th><th>Other Lead Vendors</th></tr>
           </thead>
           <tbody>
-            <tr><td>Time to Launch</td><td class="hl">3â€“5 Days</td><td>4â€“6 Weeks</td><td>7â€“14 Days</td></tr>
-            <tr><td>Customized Solution</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="partial">Partial</span></td></tr>
-            <tr><td>Exclusive Leads</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="cross">âœ•</span></td></tr>
-            <tr><td>OTP Verified Leads</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="cross">âœ•</span></td></tr>
-            <tr><td>No Hidden Fees</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="partial">Partial</span></td></tr>
+            <tr><td>Time to Launch</td><td class="hl">3-5 Days</td><td>4-6 Weeks</td><td>7-14 Days</td></tr>
+            <tr><td>Customized Solution</td><td class="hl"><span class="tick">&check;</span></td><td><span class="cross">&times;</span></td><td><span class="partial">Partial</span></td></tr>
+            <tr><td>Exclusive Leads</td><td class="hl"><span class="tick">&check;</span></td><td><span class="cross">&times;</span></td><td><span class="cross">&times;</span></td></tr>
+            <tr><td>OTP Verified Leads</td><td class="hl"><span class="tick">&check;</span></td><td><span class="cross">&times;</span></td><td><span class="cross">&times;</span></td></tr>
+            <tr><td>No Hidden Fees</td><td class="hl"><span class="tick">&check;</span></td><td><span class="cross">&times;</span></td><td><span class="partial">Partial</span></td></tr>
             <tr><td>Pricing</td><td class="hl">Flat, transparent packages</td><td>High salary + benefits</td><td>Hidden fees + setup costs</td></tr>
-            <tr><td>CRM Integration</td><td class="hl"><span class="tick">âœ“</span></td><td><span class="cross">âœ•</span></td><td><span class="partial">Partial</span></td></tr>
+            <tr><td>CRM Integration</td><td class="hl"><span class="tick">&check;</span></td><td><span class="cross">&times;</span></td><td><span class="partial">Partial</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -754,7 +754,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
         <div class="callouts">
           <div class="callout reveal"><span class="dot"></span><div><h4>Built for your capacity</h4><p>Volume scales with what your team can actually convert, never more, never less.</p></div></div>
           <div class="callout reveal"><span class="dot"></span><div><h4>No long-term lock-in</h4><p>No multi-year contracts and no hidden fees buried in the fine print.</p></div></div>
-          <div class="callout reveal"><span class="dot"></span><div><h4>Live in 3â€“5 days</h4><p>Fast onboarding so you're collecting verified leads inside a week, not a quarter.</p></div></div>
+          <div class="callout reveal"><span class="dot"></span><div><h4>Live in 3-5 days</h4><p>Fast onboarding so you're collecting verified leads inside a week, not a quarter.</p></div></div>
         </div>
       </div>
     </div>
@@ -770,7 +770,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
       <div class="faq-list">
         <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How much does it cost?<span class="plus">+</span></button><div class="faq-a"><p>Pricing depends on your target market, monthly volume and how much of the system you want built out. Fill in the form below and we'll reach out within 24 hours to schedule your consultation call with our sales team.</p></div></div>
         <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How are leads delivered to me?<span class="plus">+</span></button><div class="faq-a"><p>Verified leads are pushed in real time straight into your CRM or inbox the moment a prospect completes OTP verification. No manual exports.</p></div></div>
-        <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How long does it take to get started?<span class="plus">+</span></button><div class="faq-a"><p>Most systems are built, tested and launched within 3â€“5 business days of kickoff.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">How long does it take to get started?<span class="plus">+</span></button><div class="faq-a"><p>Most systems are built, tested and launched within 3-5 business days of kickoff.</p></div></div>
         <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">Can I filter leads by specific criteria?<span class="plus">+</span></button><div class="faq-a"><p>Yes. We configure filters around your ideal borrower profile (loan type, location, credit tier and more) before your funnel goes live.</p></div></div>
         <div class="faq-item reveal"><button class="faq-q" type="button" aria-expanded="false">What if a lead doesn't meet my criteria?<span class="plus">+</span></button><div class="faq-a"><p>We continuously monitor lead quality and adjust targeting and filters together with you to keep match rates high.</p></div></div>
       </div>
@@ -806,10 +806,10 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
               <label for="volume">Monthly Lead Volume<span class="req">*</span></label>
               <select id="volume" name="volume" required>
                 <option value="" disabled selected>Select volume</option>
-                <option value="10â€“25">10â€“25 leads/month</option>
-                <option value="26â€“50">26â€“50 leads/month</option>
-                <option value="51â€“100">51â€“100 leads/month</option>
-                <option value="101â€“250">101â€“250 leads/month</option>
+                <option value="10-25">10-25 leads/month</option>
+                <option value="26-50">26-50 leads/month</option>
+                <option value="51-100">51-100 leads/month</option>
+                <option value="101-250">101-250 leads/month</option>
                 <option value="250+">250+ leads/month</option>
               </select>
             </div>
@@ -840,7 +840,7 @@ table.compare td.hl{color:var(--accent);font-weight:600;background:rgba(29,78,21
           <a href="/client-login">Client Login</a>
         </nav>
       </div>
-      <div class="footer-bottom">Â© 2026 Dash Media. All rights reserved.</div>
+      <div class="footer-bottom">&copy; 2026 Dash Media. All rights reserved.</div>
     </div>
   </footer>
 </main>
