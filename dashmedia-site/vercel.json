@@ -3,7 +3,8 @@
     "api/contact.js": { "maxDuration": 10 },
     "api/google-callback.js": { "maxDuration": 25 },
     "api/client-portals.js": { "maxDuration": 15 },
-    "api/client-launch.js": { "maxDuration": 15 }
+    "api/client-launch.js": { "maxDuration": 15 },
+    "api/password-login.js": { "maxDuration": 10 }
   },
   "rewrites": [
     { "source": "/client-login", "destination": "/client-login.html" },
