@@ -46,7 +46,7 @@ main{width:min(100% - 40px,500px);margin:auto;padding:54px 0 64px;animation:rise
       </a>
       <p class="message" id="message" role="alert" aria-live="polite"></p>
       <p class="privacy-note">Use the email Dash linked to your agency access. Dash keeps your workspace list private to your account.</p>
-      <p class="consultation">Looking to get started? <a href="/#contact">Schedule a consultation</a>.</p>
+      <p class="consultation">Looking to sign up? <a href="https://dashmediaco.com/#contact">Request a consultation</a>.</p>
     </section>
   </main>
   <footer class="foot"><span>© 2026 Dash Media</span><a href="mailto:hello@dashmediaco.com">Need help?</a></footer>
@@ -101,27 +101,12 @@ main{width:min(100% - 40px,500px);margin:auto;padding:54px 0 64px;animation:rise
   var width=0;
   var height=0;
   var frame=null;
-  function resize(){
-    if(!canvas||!context)return;
-    var ratio=Math.min(window.devicePixelRatio||1,1.5);
-    width=window.innerWidth;
-    height=window.innerHeight;
-    canvas.width=Math.round(width*ratio);
-    canvas.height=Math.round(height*ratio);
-    context.setTransform(ratio,0,0,ratio,0,0);
-    var number=Math.max(14,Math.min(36,Math.round(width/42)));
-    particles=[];
-    for(var i=0;i<number;i++){
-      particles.push({x:Math.random()*width,y:Math.random()*height,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:.7+Math.random()*1.25,a:.16+Math.random()*.35});
-    }
-    draw();
-  }
-  function draw(){
+  function render(advance){
     if(!context)return;
     context.clearRect(0,0,width,height);
     for(var i=0;i<particles.length;i++){
       var point=particles[i];
-      if(!reduced){
+      if(advance){
         point.x+=point.vx;
         point.y+=point.vy;
         if(point.x<-10)point.x=width+10;
@@ -148,16 +133,47 @@ main{width:min(100% - 40px,500px);margin:auto;padding:54px 0 64px;animation:rise
       context.arc(point.x,point.y,point.r,0,Math.PI*2);
       context.fill();
     }
-    if(!reduced&&!document.hidden)frame=window.requestAnimationFrame(draw);
   }
+
+  function animate(){
+    frame=null;
+    if(document.hidden)return;
+    render(!reduced);
+    if(!reduced)frame=window.requestAnimationFrame(animate);
+  }
+
+  function startAnimation(){
+    if(!reduced&&!document.hidden&&!frame)frame=window.requestAnimationFrame(animate);
+  }
+
+  function resize(){
+    if(!canvas||!context)return;
+    var ratio=Math.min(window.devicePixelRatio||1,1.5);
+    width=window.innerWidth;
+    height=window.innerHeight;
+    canvas.width=Math.round(width*ratio);
+    canvas.height=Math.round(height*ratio);
+    context.setTransform(ratio,0,0,ratio,0,0);
+    var number=Math.max(14,Math.min(36,Math.round(width/42)));
+    particles=[];
+    for(var i=0;i<number;i++){
+      particles.push({x:Math.random()*width,y:Math.random()*height,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:.7+Math.random()*1.25,a:.16+Math.random()*.35});
+    }
+    render(false);
+  }
+
   if(canvas&&context){
     resize();
     window.addEventListener('resize',resize,{passive:true});
     document.addEventListener('visibilitychange',function(){
-      if(document.hidden&&frame)window.cancelAnimationFrame(frame);
-      else if(!document.hidden&&!reduced)draw();
+      if(document.hidden&&frame){
+        window.cancelAnimationFrame(frame);
+        frame=null;
+      }else{
+        startAnimation();
+      }
     });
-    if(!reduced)frame=window.requestAnimationFrame(draw);
+    startAnimation();
   }
 })();
 </script>
