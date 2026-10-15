@@ -72,6 +72,19 @@ function userKey(email) {
   return 'dash:client-portals:user:' + digest;
 }
 
+function ghlUserAccessKey(email) {
+  return 'dash:client-portals:ghl-user:' + emailDigest(email);
+}
+
+function ghlUserRecordKey(locationId, userId) {
+  var digest = crypto.createHash('sha256').update(locationId + ':' + userId).digest('hex');
+  return 'dash:client-portals:ghl-user-record:' + digest;
+}
+
+function isValidGhlUserId(value) {
+  return typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value);
+}
+
 function normalizePortalBaseUrl(value) {
   var parsed;
   try {
@@ -109,21 +122,78 @@ async function getClient(clientId) {
   return parseClient(value, clientId);
 }
 
+async function getClientByLocationId(locationIdValue) {
+  if (!isValidLocationId(locationIdValue)) return null;
+  var clientIds = await redisCommand(['SMEMBERS', 'dash:client-portals:ids'], false);
+  if (!Array.isArray(clientIds)) return null;
+  var clients = await Promise.all(clientIds.filter(isValidClientId).map(getClient));
+  var matches = clients.filter(function (client) {
+    return client && client.locationId === locationIdValue;
+  });
+  if (matches.length > 1) throw new Error('HighLevel location is mapped to multiple agencies');
+  return matches[0] || null;
+}
+
+function parseGhlUserRecord(value, locationId, userId) {
+  if (!value) return null;
+  var record;
+  try {
+    record = JSON.parse(value);
+  } catch (err) {
+    throw new Error('HighLevel user sync record is invalid');
+  }
+  if (!record || record.locationId !== locationId || record.userId !== userId ||
+      !isValidLocationId(record.locationId) || !isValidGhlUserId(record.userId) ||
+      !isValidClientId(record.clientId) || typeof record.updatedAt !== 'string') {
+    throw new Error('HighLevel user sync record is invalid');
+  }
+  record.email = normalizeEmail(record.email);
+  return record;
+}
+
+async function redisMultiExec(commands) {
+  var settings = redisSettings(true);
+  var response = await fetch(settings.url + '/multi-exec', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + settings.token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(commands),
+    signal: AbortSignal.timeout(5000)
+  });
+  if (!response.ok) throw new Error('Client portal database request failed');
+  var results = await response.json();
+  if (!Array.isArray(results) || results.some(function (item) { return item.error; })) {
+    throw new Error('Client portal database write failed');
+  }
+}
+
 async function getClientsForEmail(emailValue) {
   var email = normalizeEmail(emailValue);
-  var raw = await redisCommand(['GET', userKey(email)], false);
-  if (!raw) return [];
-  var assignment;
-  try {
-    assignment = JSON.parse(raw);
-  } catch (err) {
-    throw new Error('Client access record is invalid');
+  var values = await Promise.all([
+    redisCommand(['GET', userKey(email)], false),
+    redisCommand(['SMEMBERS', ghlUserAccessKey(email)], false)
+  ]);
+  var manualIds = [];
+  if (values[0]) {
+    var assignment;
+    try {
+      assignment = JSON.parse(values[0]);
+    } catch (err) {
+      throw new Error('Client access record is invalid');
+    }
+    if (!assignment || assignment.email !== email || !Array.isArray(assignment.clientIds) ||
+        assignment.clientIds.some(function (id) { return !isValidClientId(id); })) {
+      throw new Error('Client access record is invalid');
+    }
+    manualIds = assignment.clientIds;
   }
-  if (!assignment || assignment.email !== email || !Array.isArray(assignment.clientIds) ||
-      assignment.clientIds.some(function (id) { return !isValidClientId(id); })) {
-    throw new Error('Client access record is invalid');
+  var ghlIds = Array.isArray(values[1]) ? values[1] : [];
+  if (ghlIds.some(function (id) { return !isValidClientId(id); })) {
+    throw new Error('HighLevel client access record is invalid');
   }
-  var uniqueIds = Array.from(new Set(assignment.clientIds));
+  var uniqueIds = Array.from(new Set(manualIds.concat(ghlIds)));
   var clients = await Promise.all(uniqueIds.map(getClient));
   return clients
     .filter(function (client) { return client && client.status === 'active'; })
@@ -219,13 +289,74 @@ async function assignUser(emailValue, clientIdsValue) {
   return record;
 }
 
+async function syncGhlUserAccess(eventType, userIdValue, emailValue, locationIdValue) {
+  var locationId = typeof locationIdValue === 'string' ? locationIdValue.trim() : '';
+  var userId = typeof userIdValue === 'string' ? userIdValue.trim() : '';
+  if (!isValidLocationId(locationId) || !isValidGhlUserId(userId) ||
+      ['UserCreate', 'UserUpdate', 'UserDelete'].indexOf(eventType) === -1) {
+    throw new Error('HighLevel user event is invalid');
+  }
+
+  var client = await getClientByLocationId(locationId);
+  if (!client) return { matched: false };
+
+  var recordKey = ghlUserRecordKey(locationId, userId);
+  var rawRecord = await redisCommand(['GET', recordKey], false);
+  var existing = parseGhlUserRecord(rawRecord, locationId, userId);
+  var commands = [];
+
+  if (eventType === 'UserDelete') {
+    var deletedEmail = existing ? existing.email : '';
+    if (!deletedEmail && typeof emailValue === 'string') {
+      try {
+        deletedEmail = normalizeEmail(emailValue);
+      } catch (err) {
+        deletedEmail = '';
+      }
+    }
+    if (deletedEmail) {
+      commands.push(['SREM', ghlUserAccessKey(deletedEmail), existing ? existing.clientId : client.id]);
+    }
+    commands.push(['DEL', recordKey]);
+    await redisMultiExec(commands);
+    return { matched: true, clientId: client.id, action: 'removed' };
+  }
+
+  var email = normalizeEmail(emailValue);
+  var removeExistingAccess = existing && (existing.email !== email || existing.clientId !== client.id);
+  if (removeExistingAccess) {
+    commands.push(['SREM', ghlUserAccessKey(existing.email), existing.clientId]);
+  }
+  if (client.status !== 'active') {
+    if (existing && !removeExistingAccess) {
+      commands.push(['SREM', ghlUserAccessKey(existing.email), existing.clientId]);
+    }
+    commands.push(['DEL', recordKey]);
+    await redisMultiExec(commands);
+    return { matched: true, clientId: client.id, action: 'removed-disabled' };
+  }
+
+  commands.push(['SADD', ghlUserAccessKey(email), client.id]);
+  commands.push(['SET', recordKey, JSON.stringify({
+    email: email,
+    locationId: locationId,
+    userId: userId,
+    clientId: client.id,
+    updatedAt: new Date().toISOString()
+  })]);
+  await redisMultiExec(commands);
+  return { matched: true, clientId: client.id, action: existing ? 'updated' : 'added' };
+}
+
 module.exports = {
   DEFAULT_PORTAL_BASE_URL: DEFAULT_PORTAL_BASE_URL,
   clearPasswordLoginAttempts: clearPasswordLoginAttempts,
   assignUser: assignUser,
   getClient: getClient,
+  getClientByLocationId: getClientByLocationId,
   getClientsForEmail: getClientsForEmail,
   getPasswordCredential: getPasswordCredential,
+  isValidGhlUserId: isValidGhlUserId,
   isValidClientId: isValidClientId,
   isValidLocationId: isValidLocationId,
   isValidPortalPassword: isValidPortalPassword,
@@ -233,5 +364,6 @@ module.exports = {
   normalizePortalBaseUrl: normalizePortalBaseUrl,
   recordPasswordLoginAttempt: recordPasswordLoginAttempt,
   saveClient: saveClient,
-  setPasswordCredential: setPasswordCredential
+  setPasswordCredential: setPasswordCredential,
+  syncGhlUserAccess: syncGhlUserAccess
 };
