@@ -1,22 +1,54 @@
 {
   "functions": {
-    "api/contact.js": { "maxDuration": 10 },
-    "api/google-callback.js": { "maxDuration": 25 },
-    "api/client-portals.js": { "maxDuration": 15 },
-    "api/client-launch.js": { "maxDuration": 15 },
-    "api/password-login.js": { "maxDuration": 10 },
-    "api/ghl-user-sync.js": { "maxDuration": 15 }
+    "api/contact.js": {
+      "maxDuration": 10
+    },
+    "api/google-callback.js": {
+      "maxDuration": 25
+    },
+    "api/client-portals.js": {
+      "maxDuration": 15
+    },
+    "api/client-launch.js": {
+      "maxDuration": 15
+    },
+    "api/password-login.js": {
+      "maxDuration": 10
+    },
+    "api/ghl-user-sync.js": {
+      "maxDuration": 15
+    },
+    "api/ghl-user-poll-sync.js": {
+      "maxDuration": 60
+    }
   },
   "rewrites": [
-    { "source": "/client-login", "destination": "/client-login.html" },
-    { "source": "/agency", "destination": "/agency-launchpad.html" }
+    {
+      "source": "/client-login",
+      "destination": "/client-login.html"
+    },
+    {
+      "source": "/agency",
+      "destination": "/agency-launchpad.html"
+    }
   ],
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.dashmediaco.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.dashmediaco.com"
+        }
+      ],
       "destination": "https://dashmediaco.com/:path*",
       "permanent": true
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/ghl-user-poll-sync",
+      "schedule": "* * * * *"
     }
   ]
 }
