@@ -314,17 +314,30 @@ async function acquireGhlUserSyncLock(lockValue, ttlSeconds) {
   return result === 'OK';
 }
 
+async function retryLockRedisCommand(command, write) {
+  for (var attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return await redisCommand(command, write);
+    } catch (err) {
+      if (attempt === 2) throw err;
+      await new Promise(function (resolve) {
+        setTimeout(resolve, 100 * (attempt + 1));
+      });
+    }
+  }
+}
+
 async function releaseGhlUserSyncLock(lockValue) {
   if (typeof lockValue !== 'string' || !/^[a-f0-9]{48}$/.test(lockValue)) {
     throw new Error('HighLevel sync lock is invalid');
   }
   var lockKey = 'dash:client-portals:ghl-user-sync-lock';
-  var currentValue = await redisCommand(['GET', lockKey], false);
+  var currentValue = await retryLockRedisCommand(['GET', lockKey], false);
   if (currentValue !== lockValue) return 0;
 
   // The sync function is limited to 60 seconds and the lock expires after 120,
   // so this compare-then-delete cannot race a newer invocation's lock.
-  return redisCommand(['DEL', lockKey], true);
+  return retryLockRedisCommand(['DEL', lockKey], true);
 }
 
 async function syncGhlUserAccessForClient(client, eventType, userId, emailValue, locationId) {
