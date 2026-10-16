@@ -6,14 +6,14 @@ The Dash Media marketing website is a static page with Vercel serverless functio
 
 1. A visitor selects Client Login and sees the Dash-branded sign-in page.
 2. Google verifies the user's email. Dash creates a signed, HTTP-only session and opens the agency page.
-3. The private agency API looks up that normalized email in Redis and returns only active agencies assigned to that user. Assignments can be added by an admin or synchronized from HighLevel user events. The page is always shown after sign-in, even when the user has one agency. There is no public Demo listing.
+3. The private agency API looks up that normalized email in Redis and returns only active agencies assigned to that user. Assignments can be added by an admin or synchronized from HighLevel. The page is always shown after sign-in, even when the user has one agency. There is no public Demo listing.
 4. Selecting an agency calls a server route that checks the same assignment again, then opens the selected HighLevel location on the white-label domain.
 
 Dash does not collect or store HighLevel passwords. HighLevel user and location permissions remain the final access control. Google sign-in to Dash does not automatically sign a user into HighLevel; configure HighLevel OIDC SSO separately if the second sign-in prompt should be removed.
 
 ## Vercel configuration
 
-Keep these values server-side in Vercel Preview and Production:
+Keep portal auth and Google OAuth values server-side in Vercel Preview and Production. Add the HighLevel sync credentials in Vercel Production only:
 
 - GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET: Google OAuth web client credentials.
 - PORTAL_SESSION_SECRET: at least 32 random bytes for signed sessions and OAuth state.
