@@ -332,7 +332,7 @@ async function releaseGhlUserSyncLock(lockValue) {
     throw new Error('HighLevel sync lock is invalid');
   }
   var lockKey = 'dash:client-portals:ghl-user-sync-lock';
-  var currentValue = await retryLockRedisCommand(['GET', lockKey], false);
+  var currentValue = await retryLockRedisCommand(['GET', lockKey], true);
   if (currentValue !== lockValue) return 0;
 
   // The sync function is limited to 60 seconds and the lock expires after 120,
