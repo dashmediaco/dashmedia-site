@@ -3,17 +3,11 @@
     "api/contact.js": {
       "maxDuration": 10
     },
-    "api/google-callback.js": {
-      "maxDuration": 25
-    },
     "api/client-portals.js": {
       "maxDuration": 15
     },
     "api/client-launch.js": {
       "maxDuration": 15
-    },
-    "api/password-login.js": {
-      "maxDuration": 10
     },
     "api/ghl-user-sync.js": {
       "maxDuration": 15
@@ -22,17 +16,17 @@
       "maxDuration": 60
     }
   },
-  "rewrites": [
+  "redirects": [
     {
       "source": "/client-login",
-      "destination": "/client-login.html"
+      "destination": "https://login.dashmediaco.com/",
+      "permanent": false
     },
     {
       "source": "/agency",
-      "destination": "/agency-launchpad.html"
-    }
-  ],
-  "redirects": [
+      "destination": "https://login.dashmediaco.com/",
+      "permanent": false
+    },
     {
       "source": "/:path*",
       "has": [
