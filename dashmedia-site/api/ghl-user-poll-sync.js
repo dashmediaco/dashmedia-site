@@ -123,6 +123,9 @@ module.exports = async function handler(req, res) {
     if (!lockAcquired) return res.status(200).json({ ok: true, skipped: true });
 
     var clients = await portalStore.listClientPortals();
+    if (clients.length === 0) {
+      throw new Error('No approved client portal locations are registered for sync');
+    }
     var totals = { locations: 0, usersAdded: 0, usersRemoved: 0 };
 
     for (var i = 0; i < clients.length; i += 1) {
@@ -135,6 +138,7 @@ module.exports = async function handler(req, res) {
       totals.usersRemoved += result.removed || 0;
     }
 
+    console.log('HighLevel portal user sync completed:', JSON.stringify(totals));
     return res.status(200).json({ ok: true, ...totals });
   } catch (err) {
     console.error('HighLevel portal user sync failed:', err && err.message ? err.message : 'unknown error');
