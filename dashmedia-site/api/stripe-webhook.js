@@ -2,7 +2,7 @@
 // Deploy as a Vercel serverless function (or any Node 18+ host).
 //
 // On checkout.session.completed:
-//   1. Builds the 4-phase subscription schedule ($500 -> $500 -> $499 -> $1000/month)
+//   1. Builds the 3-phase subscription schedule ($500 -> $500 -> $1000/month)
 //   2. Relays the payment to GoHighLevel so the onboarding automation can run
 //
 // Requires these environment variables:
@@ -11,10 +11,8 @@
 //   STRIPE_SANDBOX_SECRET_KEY Sandbox secret key (sk_test_...)
 //   STRIPE_SANDBOX_WEBHOOK_SECRET Sandbox signing secret (whsec_...)
 //   STRIPE_PRICE_500         Price ID for the $500/month phase
-//   STRIPE_PRICE_499         Price ID for the $499/month phase
 //   STRIPE_PRICE_1000        Price ID for the $1000/month phase
 //   STRIPE_SANDBOX_PRICE_500 Sandbox $500/month price ID
-//   STRIPE_SANDBOX_PRICE_499 Sandbox $499/month price ID
 //   STRIPE_SANDBOX_PRICE_1000 Sandbox $1000/month price ID
 //   GHL_PAYMENT_WEBHOOK_URL  GHL Inbound Webhook URL for "Payment Received"
 //   GHL_SANDBOX_PAYMENT_WEBHOOK_URL Optional sandbox GHL webhook URL
@@ -46,12 +44,11 @@ function readRawBody(req) {
   });
 }
 
-// Builds the 4-phase subscription schedule: $500 -> $500 -> $499 -> $1000/month.
+// Builds the 3-phase subscription schedule: $500 -> $500 -> $1000/month.
 async function schedulePriceEscalation(stripeClient, subscriptionId, isSandbox) {
   var prefix = isSandbox ? 'STRIPE_SANDBOX_' : 'STRIPE_';
   var requiredPrices = [
     process.env[prefix + 'PRICE_500'],
-    process.env[prefix + 'PRICE_499'],
     process.env[prefix + 'PRICE_1000']
   ];
 
@@ -63,13 +60,33 @@ async function schedulePriceEscalation(stripeClient, subscriptionId, isSandbox) 
     from_subscription: subscriptionId
   });
 
+  var currentPhase = schedule.phases && schedule.phases[0];
+  if (!currentPhase || !currentPhase.start_date) {
+    throw new Error('Stripe subscription schedule has no current phase');
+  }
+
+  var firstPhase = {
+    start_date: currentPhase.start_date,
+    items: [{ price: process.env[prefix + 'PRICE_500'], quantity: 1 }],
+    iterations: 1,
+    // Do not create a proration invoice while replacing the current phase.
+    proration_behavior: 'none'
+  };
+
+  // from_subscription carries Checkout's trial through to the current phase.
+  // Passing it again is required when replacing the current and future phases.
+  if (currentPhase.trial_end) {
+    firstPhase.trial_end = currentPhase.trial_end;
+  }
+
   await stripeClient.subscriptionSchedules.update(schedule.id, {
     end_behavior: 'release',
+    // The Checkout subscription must remain in its trial until trial_end.
+    proration_behavior: 'none',
     phases: [
-      { start_date: schedule.phases[0].start_date, items: [{ price: process.env[prefix + 'PRICE_500'], quantity: 1 }], iterations: 1 },
-      { items: [{ price: process.env[prefix + 'PRICE_500'], quantity: 1 }], iterations: 1 },
-      { items: [{ price: process.env[prefix + 'PRICE_499'], quantity: 1 }], iterations: 1 },
-      { items: [{ price: process.env[prefix + 'PRICE_1000'], quantity: 1 }] }
+      firstPhase,
+      { items: [{ price: process.env[prefix + 'PRICE_500'], quantity: 1 }], iterations: 1, proration_behavior: 'none' },
+      { items: [{ price: process.env[prefix + 'PRICE_1000'], quantity: 1 }], proration_behavior: 'none' }
     ]
   });
 
