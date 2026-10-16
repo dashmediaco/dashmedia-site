@@ -1,33 +1,28 @@
 # Dash Media Website
 
-The Dash Media marketing website is a static page with Vercel serverless functions for the contact form and client portal.
+The Dash Media marketing website is static with Vercel functions for the contact form and internal HighLevel location inventory sync. HighLevel handles client authentication on the white-label domain.
 
-## Client portal flow
+## Client login
 
-1. A visitor selects Client Login and sees the Dash-branded sign-in page.
-2. Google verifies the user's email. Dash creates a signed, HTTP-only session and opens the agency page.
-3. The private agency API looks up that normalized email in Redis and returns only active agencies assigned to that user. Assignments can be added by an admin or synchronized from HighLevel. The page is always shown after sign-in, even when the user has one agency. There is no public Demo listing.
-4. Selecting an agency calls a server route that checks the same assignment again, then opens the selected HighLevel location on the white-label domain.
+The website's Client Login links open `https://login.dashmediaco.com/` directly. HighLevel's Dash-branded login handles email/password and Google sign-in once, then applies the user's existing HighLevel sub-account permissions. If the user belongs to multiple sub-accounts, HighLevel provides its account switcher. Dash does not collect HighLevel passwords or show a separate agency chooser.
 
-Dash does not collect or store HighLevel passwords. HighLevel user and location permissions remain the final access control. Google sign-in to Dash does not automatically sign a user into HighLevel; configure HighLevel OIDC SSO separately if the second sign-in prompt should be removed.
+`/client-login` and `/agency` remain as compatibility redirects to the branded HighLevel login domain. The old Dash login page and agency chooser were removed. HighLevel is the authority for user invitations, workspace membership, and access.
 
 ## Vercel configuration
 
-Keep portal auth and Google OAuth values server-side in Vercel Preview and Production. Add the HighLevel sync credentials in Vercel Production only:
+Keep registry and sync secrets server-side in Vercel. Add the HighLevel sync credentials in Vercel Production only:
 
-- GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET: Google OAuth web client credentials.
-- PORTAL_SESSION_SECRET: at least 32 random bytes for signed sessions and OAuth state.
+- PORTAL_SESSION_SECRET: at least 32 random bytes for legacy signed portal sessions.
 - CLIENT_PORTAL_ADMIN_TOKEN: a strong bearer token for the protected assignment API.
 - GHL_PRIVATE_INTEGRATION_TOKEN: the agency Private Integration token with only users.readonly and locations.readonly.
 - CRON_SECRET: a random secret Vercel uses to authenticate the scheduled sync request.
-- GOOGLE_OAUTH_REDIRECT_URI: optional; defaults to https://dashmediaco.com/api/google-callback.
 - Redis/KV REST URL and token: the existing Upstash or Vercel KV connection used for agency and user records.
 
-Register the exact callback URL, https://dashmediaco.com/api/google-callback, in the Google OAuth client. The sign-in requests openid, email, and profile, and requires a verified email. Redeploy after changing Vercel environment variables.
+HighLevel login does not use the site's legacy Google OAuth client. HighLevel's own Google button and email/password form authenticate users on the white-label domain.
 
-## Agency records and user assignments
+## Agency inventory
 
-The protected POST endpoint is /api/client-portal-admin. Send the admin token as Authorization: Bearer TOKEN. First save an agency record with its HighLevel location ID. Then assign only the intended verified email addresses to that agency.
+The protected POST endpoint is `/api/client-portal-admin`. Send the admin token as `Authorization: Bearer TOKEN`. Save each approved agency with its HighLevel location ID. User assignments in this Redis registry are an internal membership mirror only; they do not create or restrict HighLevel access. Invite users and assign their sub-accounts in HighLevel.
 
 Example agency record fields:
 
@@ -47,7 +42,7 @@ Example user assignment:
       "clientIds": ["demo"]
     }
 
-An email can be assigned to multiple agencies by listing their IDs in clientIds. Use an empty array to remove admin-managed Dash agency assignments for that email. Disabled or unknown agencies cannot be assigned. The Demo is not assigned to anyone by default; a user appears there only after an admin assigns them or the HighLevel bridge receives a matching subaccount user event.
+An email can be mapped to multiple inventory records by listing their IDs in `clientIds`. Use an empty array to remove admin-managed inventory mappings for that email. Disabled or unknown agencies cannot be assigned. These records do not control which HighLevel sub-accounts a user can open.
 
 ## HighLevel user sync
 
@@ -55,9 +50,9 @@ The production poller reads HighLevel agency users for each location already reg
 
 Create an agency Private Integration under HighLevel Settings > Private Integrations named `Dash Client Portal User Sync`. Grant only `users.readonly` and `locations.readonly`. Save its generated token as the server-side Vercel Production variable `GHL_PRIVATE_INTEGRATION_TOKEN`. Set a random `CRON_SECRET` in the same environment; Vercel sends it as a Bearer authorization header for scheduled requests. Never put either secret in client-side code or GitHub.
 
-The sync updates access when a HighLevel user's email or location membership changes, and removes HighLevel-managed access when the user disappears from that location. Admin-managed Dash assignments remain separate. Disabled Dash client records have their HighLevel-managed access removed. The poller does not auto-register every HighLevel subaccount: add an approved client location to the Dash registry first so internal, duplicate, or test locations do not become client agencies.
+The sync mirrors membership when a HighLevel user's email or location membership changes. The Dash registry is now internal inventory only; it does not control sign-in or grant HighLevel access. HighLevel's own user and sub-account settings decide which workspaces a user can open. The poller does not auto-register every HighLevel subaccount: add an approved client location to the Dash registry first so internal, duplicate, or test locations do not enter the inventory.
 
-The signed Marketplace webhook receiver at `POST /api/ghl-user-sync` remains available for a future Marketplace app, but no webhook subscription is required for the scheduled poller. Dash sign-in remains separate from HighLevel: Google sign-in uses the verified email to find agency access, and email/password accounts need a separately provisioned Dash password. Dash does not collect or store HighLevel passwords.
+The signed Marketplace webhook receiver at `POST /api/ghl-user-sync` remains available for a future Marketplace app, but no webhook subscription is required for the scheduled poller. The mirror is not part of the user-facing login flow.
 
 ## Main site
 
