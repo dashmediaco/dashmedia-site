@@ -289,17 +289,42 @@ async function assignUser(emailValue, clientIdsValue) {
   return record;
 }
 
-async function syncGhlUserAccess(eventType, userIdValue, emailValue, locationIdValue) {
-  var locationId = typeof locationIdValue === 'string' ? locationIdValue.trim() : '';
-  var userId = typeof userIdValue === 'string' ? userIdValue.trim() : '';
-  if (!isValidLocationId(locationId) || !isValidGhlUserId(userId) ||
-      ['UserCreate', 'UserUpdate', 'UserDelete'].indexOf(eventType) === -1) {
-    throw new Error('HighLevel user event is invalid');
+function ghlUserSnapshotKey(locationId) {
+  return 'dash:client-portals:ghl-user-location:' + locationId;
+}
+
+async function listClientPortals() {
+  var clientIds = await redisCommand(['SMEMBERS', 'dash:client-portals:ids'], false);
+  if (!Array.isArray(clientIds)) return [];
+  if (clientIds.length > 1000) throw new Error('Client portal registry exceeds the sync limit');
+  var clients = await Promise.all(clientIds.filter(isValidClientId).map(getClient));
+  return clients
+    .filter(function (client) { return !!client; })
+    .sort(function (left, right) { return left.name.localeCompare(right.name); });
+}
+
+async function acquireGhlUserSyncLock(lockValue, ttlSeconds) {
+  if (typeof lockValue !== 'string' || !/^[a-f0-9]{48}$/.test(lockValue) ||
+      !Number.isInteger(ttlSeconds) || ttlSeconds < 30 || ttlSeconds > 600) {
+    throw new Error('HighLevel sync lock is invalid');
   }
+  var result = await redisCommand([
+    'SET', 'dash:client-portals:ghl-user-sync-lock', lockValue, 'NX', 'EX', ttlSeconds
+  ], true);
+  return result === 'OK';
+}
 
-  var client = await getClientByLocationId(locationId);
-  if (!client) return { matched: false };
+async function releaseGhlUserSyncLock(lockValue) {
+  if (typeof lockValue !== 'string' || !/^[a-f0-9]{48}$/.test(lockValue)) {
+    throw new Error('HighLevel sync lock is invalid');
+  }
+  var script = "if redis.call('GET', KEYS[1]) == ARGV[1] then return redis.call('DEL', KEYS[1]) else return 0 end";
+  return redisCommand([
+    'EVAL', script, 1, 'dash:client-portals:ghl-user-sync-lock', lockValue
+  ], true);
+}
 
+async function syncGhlUserAccessForClient(client, eventType, userId, emailValue, locationId) {
   var recordKey = ghlUserRecordKey(locationId, userId);
   var rawRecord = await redisCommand(['GET', recordKey], false);
   var existing = parseGhlUserRecord(rawRecord, locationId, userId);
@@ -317,6 +342,7 @@ async function syncGhlUserAccess(eventType, userIdValue, emailValue, locationIdV
     if (deletedEmail) {
       commands.push(['SREM', ghlUserAccessKey(deletedEmail), existing ? existing.clientId : client.id]);
     }
+    commands.push(['SREM', ghlUserSnapshotKey(locationId), userId]);
     commands.push(['DEL', recordKey]);
     await redisMultiExec(commands);
     return { matched: true, clientId: client.id, action: 'removed' };
@@ -331,12 +357,14 @@ async function syncGhlUserAccess(eventType, userIdValue, emailValue, locationIdV
     if (existing && !removeExistingAccess) {
       commands.push(['SREM', ghlUserAccessKey(existing.email), existing.clientId]);
     }
+    commands.push(['SREM', ghlUserSnapshotKey(locationId), userId]);
     commands.push(['DEL', recordKey]);
     await redisMultiExec(commands);
     return { matched: true, clientId: client.id, action: 'removed-disabled' };
   }
 
   commands.push(['SADD', ghlUserAccessKey(email), client.id]);
+  commands.push(['SADD', ghlUserSnapshotKey(locationId), userId]);
   commands.push(['SET', recordKey, JSON.stringify({
     email: email,
     locationId: locationId,
@@ -346,6 +374,68 @@ async function syncGhlUserAccess(eventType, userIdValue, emailValue, locationIdV
   })]);
   await redisMultiExec(commands);
   return { matched: true, clientId: client.id, action: existing ? 'updated' : 'added' };
+}
+
+async function syncGhlUserAccess(eventType, userIdValue, emailValue, locationIdValue) {
+  var locationId = typeof locationIdValue === 'string' ? locationIdValue.trim() : '';
+  var userId = typeof userIdValue === 'string' ? userIdValue.trim() : '';
+  if (!isValidLocationId(locationId) || !isValidGhlUserId(userId) ||
+      ['UserCreate', 'UserUpdate', 'UserDelete'].indexOf(eventType) === -1) {
+    throw new Error('HighLevel user event is invalid');
+  }
+
+  var client = await getClientByLocationId(locationId);
+  if (!client) return { matched: false };
+  return syncGhlUserAccessForClient(client, eventType, userId, emailValue, locationId);
+}
+
+async function reconcileGhlUsersForLocation(locationIdValue, usersValue) {
+  var locationId = typeof locationIdValue === 'string' ? locationIdValue.trim() : '';
+  if (!isValidLocationId(locationId) || !Array.isArray(usersValue) || usersValue.length > 5000) {
+    throw new Error('HighLevel location user list is invalid');
+  }
+
+  var client = await getClientByLocationId(locationId);
+  if (!client) return { matched: false, added: 0, removed: 0 };
+
+  var desiredUsers = new Map();
+  if (client.status === 'active') {
+    usersValue.forEach(function (user) {
+      if (!user || typeof user !== 'object' || Array.isArray(user)) {
+        throw new Error('HighLevel user record is invalid');
+      }
+      var userId = typeof user.id === 'string' ? user.id.trim() : '';
+      if (!isValidGhlUserId(userId)) throw new Error('HighLevel user ID is invalid');
+      var email = normalizeEmail(user.email);
+      if (desiredUsers.has(userId) && desiredUsers.get(userId) !== email) {
+        throw new Error('HighLevel user IDs are not unique');
+      }
+      desiredUsers.set(userId, email);
+    });
+  }
+
+  var snapshotKey = ghlUserSnapshotKey(locationId);
+  var existingUserIds = await redisCommand(['SMEMBERS', snapshotKey], false);
+  if (!Array.isArray(existingUserIds) || existingUserIds.length > 5000 ||
+      existingUserIds.some(function (userId) { return !isValidGhlUserId(userId); })) {
+    throw new Error('HighLevel user sync snapshot is invalid');
+  }
+
+  var added = 0;
+  var removed = 0;
+  for (var entry of desiredUsers.entries()) {
+    var result = await syncGhlUserAccessForClient(client, 'UserUpdate', entry[0], entry[1], locationId);
+    if (result.action === 'added') added += 1;
+  }
+
+  for (var i = 0; i < existingUserIds.length; i += 1) {
+    var existingUserId = existingUserIds[i];
+    if (desiredUsers.has(existingUserId)) continue;
+    await syncGhlUserAccessForClient(client, 'UserDelete', existingUserId, '', locationId);
+    removed += 1;
+  }
+
+  return { matched: true, added: added, removed: removed, users: desiredUsers.size };
 }
 
 module.exports = {
@@ -365,5 +455,9 @@ module.exports = {
   recordPasswordLoginAttempt: recordPasswordLoginAttempt,
   saveClient: saveClient,
   setPasswordCredential: setPasswordCredential,
-  syncGhlUserAccess: syncGhlUserAccess
+  syncGhlUserAccess: syncGhlUserAccess,
+  listClientPortals: listClientPortals,
+  reconcileGhlUsersForLocation: reconcileGhlUsersForLocation,
+  acquireGhlUserSyncLock: acquireGhlUserSyncLock,
+  releaseGhlUserSyncLock: releaseGhlUserSyncLock
 };
