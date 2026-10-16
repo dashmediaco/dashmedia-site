@@ -1,5 +1,5 @@
-// Compatibility route: always enter through Dash's authenticated portal first.
-var LOGIN_URL = '/client-login';
+// HighLevel owns client authentication and account access. Send every entry point there.
+var LOGIN_URL = 'https://login.dashmediaco.com/';
 
 module.exports = function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store, max-age=0');

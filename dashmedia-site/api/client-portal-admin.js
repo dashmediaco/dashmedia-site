@@ -70,26 +70,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (body.action === 'set-password') {
-    var passwordEmail = '';
-    try {
-      passwordEmail = portalStore.normalizeEmail(body.email);
-    } catch (err) {
-      return sendError(res, 400, 'Client email is invalid');
-    }
-    if (!portalStore.isValidPortalPassword(body.password)) {
-      return sendError(res, 400, 'Password must be at least 12 characters');
-    }
-    try {
-      var assignedAgencies = await portalStore.getClientsForEmail(passwordEmail);
-      if (!assignedAgencies.length) {
-        return sendError(res, 400, 'Assign at least one active agency before setting a password');
-      }
-      await portalStore.setPasswordCredential(passwordEmail, body.password);
-      return res.status(200).json({ saved: true, email: passwordEmail });
-    } catch (err) {
-      console.error('Client password update failed:', err && err.message ? err.message : 'unknown error');
-      return sendError(res, 500, 'Client password could not be saved');
-    }
+    return sendError(res, 410, 'Dash no longer stores client passwords. Manage client sign-in in HighLevel.');
   }
 
   if (body.action && body.action !== 'save-client') {
